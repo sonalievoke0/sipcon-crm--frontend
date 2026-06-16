@@ -1,0 +1,96 @@
+:root {
+  /* Colors */
+  --color-primary: #16407A; /* SIPCON Precision Blue */
+  --color-secondary: #2E6FB5; /* Steel Blue */
+  --color-accent: #0FB5AE; /* Evoke Teal */
+  --color-success: #16A34A; /* Success Green */
+  --color-warning: #D97706; /* Attention Amber */
+  --color-danger: #DC2626; /* Escalation Red */
+  --color-text: #1F2937; /* Ink */
+  --color-bg: #EEF2F7; /* Cloud */
+  
+  --color-white: #FFFFFF;
+  --color-border: #D1D5DB;
+
+  /* Typography */
+  --font-family: 'Inter', 'Roboto', 'Arial', sans-serif;
+  --font-size-body: 14px;
+  --font-size-heading: 18px; /* Max 2 sizes per screen: this and body */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+  font-size: var(--font-size-heading);
+  font-weight: bold;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+/* Base styles for premium UI */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+/* Card and Table generic styles */
+.card {
+  background: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 12px 16px;
+  font-weight: bold;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+tr:nth-child(even) {
+  background-color: var(--color-bg); /* Table stripes using Cloud */
+}
+
+tr:hover {
+  background-color: rgba(46, 111, 181, 0.05); /* Very light Steel Blue for hover */
+}
