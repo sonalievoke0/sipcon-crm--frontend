@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CrmContext = createContext();
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://sipcon-crm-backend.onrender.com/api';
 const HEADERS = { 'x-api-key': 'sipcon_secure_key_123', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
@@ -54,7 +54,7 @@ export const CrmProvider = ({ children }) => {
       try {
         const res = await fetch(`${API_BASE}/leads`, { headers: HEADERS });
         if (res.ok) setLeads(await res.json());
-      } catch (err) {}
+      } catch (err) { }
     }, 10000);
     return () => clearInterval(intervalId);
   }, []);
