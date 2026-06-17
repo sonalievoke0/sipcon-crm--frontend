@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const CrmContext = createContext();
 
 const API_BASE = 'https://sipcon-crm-backend.onrender.com/api';
-const HEADERS = { 'x-api-key': 'sipcon_secure_key_123', 'Content-Type': 'application/json' };
+const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
   const [role, setRole] = useState('Admin'); // 'Admin' or 'Staff'
