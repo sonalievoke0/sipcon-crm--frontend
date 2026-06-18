@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CrmContext = createContext();
 
-const API_BASE = 'https://sipcon-crm-backend.onrender.com/api';
+const API_BASE = 'http://localhost:5000/api';
 const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
@@ -21,25 +21,65 @@ export const CrmProvider = ({ children }) => {
   const fetchAllData = async () => {
     try {
       const opts = { headers: HEADERS };
-      const [compRes, contRes, prodRes, purRes, staffRes, tickRes, leadsRes, callRes] = await Promise.all([
-        fetch(`${API_BASE}/companies`, opts),
-        fetch(`${API_BASE}/contacts`, opts),
-        fetch(`${API_BASE}/products`, opts),
-        fetch(`${API_BASE}/purchases`, opts),
-        fetch(`${API_BASE}/staff`, opts),
-        fetch(`${API_BASE}/tickets`, opts),
-        fetch(`${API_BASE}/leads`, opts),
-        fetch(`${API_BASE}/call_logs`, opts)
-      ]);
+      const res = await fetch(`${API_BASE}/machines`, opts);
+      
+      if (res.ok) {
+        const machines = await res.json();
+        
+        const derivedCompanies = [];
+        const derivedProducts = [];
+        const derivedPurchases = [];
+        
+        let companyIdCounter = 1;
+        let productIdCounter = 1;
+        let purchaseIdCounter = 1;
 
-      if (compRes.ok) setCompanies(await compRes.json());
-      if (contRes.ok) setContacts(await contRes.json());
-      if (prodRes.ok) setProducts(await prodRes.json());
-      if (purRes.ok) setPurchases(await purRes.json());
-      if (staffRes.ok) setStaff(await staffRes.json());
-      if (tickRes.ok) setTickets(await tickRes.json());
-      if (leadsRes.ok) setLeads(await leadsRes.json());
-      if (callRes.ok) setCallLogs(await callRes.json());
+        machines.forEach(machine => {
+          let company = derivedCompanies.find(c => c.company_name === machine.company_name);
+          if (!company && machine.company_name) {
+            company = {
+              company_id: companyIdCounter++,
+              company_name: machine.company_name,
+              industry: '',
+              city: '',
+              source: 'DB',
+            };
+            derivedCompanies.push(company);
+          }
+          
+          let product = derivedProducts.find(p => p.machine_name === machine.model);
+          if (!product && machine.model) {
+            product = {
+              product_id: productIdCounter++,
+              machine_name: machine.model,
+              description: machine.machine_details,
+            };
+            derivedProducts.push(product);
+          }
+          
+          if (company && product) {
+            derivedPurchases.push({
+              purchase_id: purchaseIdCounter++,
+              company_id: company.company_id,
+              product_id: product.product_id,
+              serial_no: machine.machine_serial_no || machine.machine_no,
+            });
+          }
+        });
+
+        setCompanies(derivedCompanies);
+        setProducts(derivedProducts);
+        setPurchases(derivedPurchases);
+        
+        // Provide mock data for deleted endpoints
+        setContacts([]);
+        setStaff([]);
+        setLeads([]);
+        setCallLogs([]);
+        setTickets([
+          { ticket_id: 'TICK-MOCK', status: 'Open', query_text: 'Example mock ticket since backend tickets route was deleted', priority: 'Medium' }
+        ]);
+      }
     } catch (error) {
       console.error('Failed to fetch data from backend:', error);
     } finally {
@@ -49,14 +89,6 @@ export const CrmProvider = ({ children }) => {
 
   useEffect(() => {
     fetchAllData();
-    // Poll for new leads every 10 seconds
-    const intervalId = setInterval(async () => {
-      try {
-        const res = await fetch(`${API_BASE}/leads`, { headers: HEADERS });
-        if (res.ok) setLeads(await res.json());
-      } catch (err) { }
-    }, 10000);
-    return () => clearInterval(intervalId);
   }, []);
 
   // Update functions that persist to backend

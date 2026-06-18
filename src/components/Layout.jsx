@@ -12,10 +12,8 @@ const Layout = () => {
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Staff'] },
-    { path: '/director-dashboard', label: 'Director Dash', icon: <BarChart2 size={20} />, roles: ['Admin'] },
     { path: '/tickets', label: 'Tickets', icon: <Ticket size={20} />, roles: ['Admin', 'Staff'] },
-    { path: '/companies', label: 'Companies', icon: <Building2 size={20} />, roles: ['Admin', 'Staff'] },
-    { path: '/products', label: 'Products Catalog', icon: <Package size={20} />, roles: ['Admin'] }
+    { path: '/companies', label: 'Companies', icon: <Building2 size={20} />, roles: ['Admin', 'Staff'] }
   ];
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(role));
@@ -113,22 +111,6 @@ const Layout = () => {
               Upload CSV
             </button>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', marginLeft: '16px' }}>
-              <span style={{ color: 'var(--color-text)', opacity: 0.7 }}>Role:</span>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                style={{
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: '1px solid var(--color-border)',
-                  backgroundColor: 'var(--color-white)'
-                }}
-              >
-                <option value="Admin">Admin</option>
-                <option value="Staff">Staff</option>
-              </select>
-            </div>
             <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
               AM
             </div>
