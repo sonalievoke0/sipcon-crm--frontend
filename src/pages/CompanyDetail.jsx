@@ -5,7 +5,7 @@ import { useCrm } from '../context/CrmContext';
 const CompanyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { companies, contacts, purchases, products } = useCrm();
+  const { companies, contacts } = useCrm();
 
   const company = companies.find(c => c.company_id === parseInt(id));
 
@@ -13,8 +13,7 @@ const CompanyDetail = () => {
     return <div style={{ padding: '24px' }}>Company not found.</div>;
   }
 
-  const companyContacts = contacts.filter(c => c.company_id === company.company_id);
-  const companyPurchases = purchases.filter(p => p.company_id === company.company_id);
+  const primaryContact = contacts.find(c => c.company_id === company.company_id && c.is_primary);
 
   return (
     <div>
@@ -28,76 +27,46 @@ const CompanyDetail = () => {
         <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>{company.company_name}</h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {/* Profile Card */}
-          <div className="card">
-            <h3 style={{ marginTop: 0 }}>Company Profile</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div><strong>Industry:</strong> {company.industry || '-'}</div>
-              <div><strong>Location:</strong> {company.city}</div>
-              <div><strong>Address:</strong> {company.address || '-'}</div>
-              <div><strong>GST/Reg:</strong> {company.gst_or_reg_no || '-'}</div>
-              <div><strong>Source:</strong> {company.source}</div>
-              <div><strong>Created:</strong> {new Date(company.created_at).toLocaleDateString()}</div>
-            </div>
+      <div className="card" style={{ maxWidth: '600px' }}>
+        <h3 style={{ marginTop: 0, borderBottom: '1px solid var(--color-border)', paddingBottom: '12px', marginBottom: '16px' }}>Company Details</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '15px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
+            <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Company Name:</strong> 
+            <span style={{ fontWeight: '500', color: 'var(--color-primary)' }}>{company.company_name}</span>
           </div>
-
-          {/* Contacts Card */}
-          <div className="card">
-            <h3 style={{ marginTop: 0 }}>Contacts</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {companyContacts.map(contact => (
-                <div key={contact.contact_id} style={{ padding: '12px', border: '1px solid var(--color-border)', borderRadius: '6px' }}>
-                  <div style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>
-                    {contact.full_name} {contact.is_primary && <span style={{ fontSize: '10px', backgroundColor: 'var(--color-accent)', color: 'white', padding: '2px 6px', borderRadius: '10px', marginLeft: '8px' }}>Primary</span>}
-                  </div>
-                  <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px' }}>{contact.designation}</div>
-                  <div style={{ fontSize: '13px' }}><strong>WhatsApp:</strong> {contact.whatsapp_number}</div>
-                  <div style={{ fontSize: '13px' }}><strong>Email:</strong> {contact.email || '-'}</div>
-                </div>
-              ))}
-              {companyContacts.length === 0 && <div>No contacts found.</div>}
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
+            <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Industry:</strong> 
+            <span>{company.industry || '-'}</span>
           </div>
-        </div>
-
-        {/* Machines Purchased */}
-        <div className="card">
-          <h3 style={{ marginTop: 0 }}>Purchased Machines</h3>
-          <div className="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>Machine</th>
-                  <th>Serial No</th>
-                  <th>Purchase Date</th>
-                  <th>AMC Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {companyPurchases.map(purchase => {
-                  const product = products.find(p => p.product_id === purchase.product_id);
-                  return (
-                    <tr key={purchase.purchase_id}>
-                      <td style={{ fontWeight: 'bold', color: 'var(--color-secondary)' }}>{product?.machine_name || 'Unknown'}</td>
-                      <td>{purchase.serial_no || '-'}</td>
-                      <td>{new Date(purchase.purchase_date).toLocaleDateString()}</td>
-                      <td>
-                        <span style={{ 
-                          padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold',
-                          backgroundColor: purchase.amc_status === 'Active' ? 'var(--color-success)' : 'var(--color-danger)',
-                          color: 'var(--color-white)'
-                        }}>
-                          {purchase.amc_status}
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-            {companyPurchases.length === 0 && <div style={{ padding: '16px' }}>No machines purchased yet.</div>}
+          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
+            <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Location:</strong> 
+            <span>{company.city}</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
+            <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Primary Contact:</strong> 
+            <span>
+              {primaryContact ? (
+                <span>
+                  {primaryContact.full_name} <br/>
+                  <span style={{ fontSize: '13px', opacity: 0.7 }}>{primaryContact.whatsapp_number}</span>
+                </span>
+              ) : '-'}
+            </span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
+            <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Source:</strong> 
+            <span>
+              <span style={{
+                padding: '4px 8px',
+                backgroundColor: company.source === 'Existing' ? 'var(--color-bg)' : 'rgba(15, 181, 174, 0.1)',
+                color: company.source === 'Existing' ? 'var(--color-text)' : 'var(--color-accent)',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}>
+                {company.source}
+              </span>
+            </span>
           </div>
         </div>
       </div>

@@ -8,8 +8,6 @@ import TicketDetail from './pages/TicketDetail'
 import CompaniesView from './pages/CompaniesView'
 import CompanyDetail from './pages/CompanyDetail'
 import ProductsView from './pages/ProductsView'
-import StaffView from './pages/StaffView'
-import LeadsView from './pages/LeadsView'
 
 function App() {
   return (
@@ -23,8 +21,6 @@ function App() {
           <Route path="companies" element={<CompaniesView />} />
           <Route path="companies/:id" element={<CompanyDetail />} />
           <Route path="products" element={<ProductsView />} />
-          <Route path="staff" element={<StaffView />} />
-          <Route path="leads" element={<LeadsView />} />
         </Route>
       </Routes>
     </BrowserRouter>

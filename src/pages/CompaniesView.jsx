@@ -23,19 +23,6 @@ const CompaniesView = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--color-border)', width: '250px' }}
           />
-          {role === 'Admin' && (
-            <button style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'var(--color-white)',
-              padding: '10px 20px',
-              border: 'none',
-              borderRadius: '6px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}>
-              + Add Company
-            </button>
-          )}
         </div>
       </div>
 

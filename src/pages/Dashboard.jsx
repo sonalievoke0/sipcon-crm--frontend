@@ -3,14 +3,12 @@ import StatusBadge from '../components/StatusBadge';
 import { useCrm } from '../context/CrmContext';
 
 const Dashboard = () => {
-  const { tickets, leads, companies } = useCrm();
+  const { tickets } = useCrm();
 
   const openTickets = tickets.filter(t => t.status === 'Open');
   const inProgressTickets = tickets.filter(t => t.status === 'In Progress');
   const escalatedTickets = tickets.filter(t => t.status === 'Escalated');
   const resolvedTickets = tickets.filter(t => t.status === 'Resolved' || t.status === 'Closed');
-
-  const recentLeads = leads.slice(0, 5);
 
   return (
     <div>
@@ -42,7 +40,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
         {/* Recent Tickets Table */}
         <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ marginTop: 0 }}>Recent Tickets</h3>
@@ -67,20 +65,6 @@ const Dashboard = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-        </div>
-
-        {/* Recent Leads */}
-        <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ marginTop: 0 }}>Latest Leads</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {recentLeads.map(lead => (
-              <div key={lead.lead_id} style={{ padding: '16px', border: '1px solid var(--color-border)', borderRadius: '8px', backgroundColor: 'var(--color-bg)' }}>
-                <div style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{lead.name}</div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text)', opacity: 0.8 }}>{lead.company_name}</div>
-                <div style={{ marginTop: '8px', fontSize: '13px', color: 'var(--color-accent)', fontWeight: 'bold' }}>Interest: {lead.machine_interest}</div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

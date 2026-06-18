@@ -2,101 +2,118 @@ import React, { useState } from 'react';
 import { useCrm } from '../context/CrmContext';
 
 const ProductsView = () => {
-  const { products, updateProduct, role } = useCrm();
-  const [editingId, setEditingId] = useState(null);
-  const [editForm, setEditForm] = useState({});
+  const { purchases, companies, products, role } = useCrm();
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const handleEditClick = (product) => {
-    setEditingId(product.product_id);
-    setEditForm(product);
-  };
+  // Combine data to display as the "Product Catalog" based on installed machines
+  const catalogData = purchases.map(purchase => {
+    const company = companies.find(c => String(c.company_id) === String(purchase.company_id));
+    const product = products.find(p => String(p.product_id) === String(purchase.product_id));
 
-  const handleSave = async () => {
-    await updateProduct(editingId, editForm);
-    setEditingId(null);
-  };
+    return {
+      id: purchase.purchase_id,
+      serial_no: purchase.serial_no || 'N/A',
+      company_name: company ? company.company_name : 'Unknown',
+      machine_details: product ? product.description : 'Unknown',
+      model: product ? product.machine_name : 'Unknown',
+    };
+  });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setEditForm({
-      ...editForm,
-      [name]: type === 'checkbox' ? checked : value
-    });
-  };
+  const filteredCatalog = catalogData.filter(item => 
+    item.serial_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.model.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div>
+    <div style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Product Catalog</h2>
-        {role === 'Admin' && (
-          <button style={{
-            backgroundColor: 'var(--color-primary)',
-            color: 'var(--color-white)',
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}>
-            + Add Machine
-          </button>
-        )}
+        <div>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '28px', letterSpacing: '-0.5px' }}>Product Catalog</h2>
+          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '15px' }}>
+            Directory of all machines currently installed
+          </p>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <div style={{ position: 'relative' }}>
+            <input
+              type="text"
+              placeholder="Search catalog..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                padding: '12px 20px',
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)',
+                width: '300px',
+                fontSize: '14px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                outline: 'none',
+                transition: 'all 0.2s ease'
+              }}
+              onFocus={(e) => e.target.style.borderColor = 'var(--color-primary)'}
+              onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
+            />
+          </div>
+          {role === 'Admin' && (
+            <button style={{
+              backgroundColor: 'var(--color-primary)',
+              color: 'var(--color-white)',
+              padding: '12px 20px',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)',
+              transition: 'transform 0.2s'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-1px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              + Add Machine
+            </button>
+          )}
+        </div>
       </div>
 
-      <div className="card">
-        <div className="table-wrapper">
-          <table>
+      <div className="card" style={{ padding: '0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
+        <div className="table-wrapper" style={{ margin: 0 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr>
-                <th>Machine Name</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Status</th>
-                {role === 'Admin' && <th>Actions</th>}
+              <tr style={{ backgroundColor: 'var(--color-primary)' }}>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)', width: '80px' }}>S.No.</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
               </tr>
             </thead>
             <tbody>
-              {products.map(p => (
-                <tr key={p.product_id}>
-                  {editingId === p.product_id ? (
-                    <>
-                      <td><input type="text" name="machine_name" value={editForm.machine_name} onChange={handleChange} style={{ width: '100%', padding: '4px' }} /></td>
-                      <td><input type="text" name="category" value={editForm.category} onChange={handleChange} style={{ width: '100%', padding: '4px' }} /></td>
-                      <td><input type="text" name="description" value={editForm.description} onChange={handleChange} style={{ width: '100%', padding: '4px' }} /></td>
-                      <td><input type="checkbox" name="active" checked={editForm.active} onChange={handleChange} /> Active</td>
-                      <td>
-                        <button onClick={handleSave} style={{ padding: '4px 8px', backgroundColor: 'var(--color-success)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
-                        <button onClick={() => setEditingId(null)} style={{ padding: '4px 8px', marginLeft: '8px', backgroundColor: 'var(--color-border)', color: 'black', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td style={{ fontWeight: 'bold', color: 'var(--color-secondary)' }}>{p.machine_name}</td>
-                      <td>{p.category}</td>
-                      <td>{p.description}</td>
-                      <td>
-                        <span style={{ 
-                          padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold',
-                          backgroundColor: p.active ? 'rgba(22, 163, 74, 0.1)' : 'rgba(220, 38, 38, 0.1)',
-                          color: p.active ? 'var(--color-success)' : 'var(--color-danger)'
-                        }}>
-                          {p.active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      {role === 'Admin' && (
-                        <td>
-                          <button 
-                            onClick={() => handleEditClick(p)}
-                            style={{ padding: '4px 12px', backgroundColor: 'var(--color-bg)', border: '1px solid var(--color-border)', borderRadius: '4px', cursor: 'pointer' }}
-                          >
-                            Edit
-                          </button>
-                        </td>
-                      )}
-                    </>
-                  )}
+              {filteredCatalog.length > 0 ? (
+                filteredCatalog.map((item, idx) => (
+                  <tr key={item.id} style={{ 
+                    borderBottom: '1px solid var(--color-border)',
+                    backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
+                  >
+                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#64748b' }}>{idx + 1}</td>
+                    <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
+                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{item.company_name}</td>
+                    <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{item.machine_details}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>
+                    No machines found matching your search.
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
