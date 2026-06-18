@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CrmContext = createContext();
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'http://localhost:5000/api' || "https://sipcon-crm-backend-production.up.railway.app/api";
 const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
@@ -22,14 +22,14 @@ export const CrmProvider = ({ children }) => {
     try {
       const opts = { headers: HEADERS };
       const res = await fetch(`${API_BASE}/machines`, opts);
-      
+
       if (res.ok) {
         const machines = await res.json();
-        
+
         const derivedCompanies = [];
         const derivedProducts = [];
         const derivedPurchases = [];
-        
+
         let companyIdCounter = 1;
         let productIdCounter = 1;
         let purchaseIdCounter = 1;
@@ -46,7 +46,7 @@ export const CrmProvider = ({ children }) => {
             };
             derivedCompanies.push(company);
           }
-          
+
           let product = derivedProducts.find(p => p.machine_name === machine.model);
           if (!product && machine.model) {
             product = {
@@ -56,7 +56,7 @@ export const CrmProvider = ({ children }) => {
             };
             derivedProducts.push(product);
           }
-          
+
           if (company && product) {
             derivedPurchases.push({
               purchase_id: purchaseIdCounter++,
@@ -70,7 +70,7 @@ export const CrmProvider = ({ children }) => {
         setCompanies(derivedCompanies);
         setProducts(derivedProducts);
         setPurchases(derivedPurchases);
-        
+
         // Provide mock data for deleted endpoints
         setContacts([]);
         setStaff([]);
