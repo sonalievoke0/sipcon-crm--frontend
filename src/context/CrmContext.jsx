@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CrmContext = createContext();
 
-const API_BASE = "https://sipcon-crm-backend-production.up.railway.app/api";
+const API_BASE = import.meta.env.VITE_API_URL || "https://sipcon-crm-backend-production.up.railway.app/api";
 const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
