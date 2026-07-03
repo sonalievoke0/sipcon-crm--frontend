@@ -7,8 +7,12 @@ import RecordingModal from '../components/RecordingModal';
 const TicketDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { tickets, updateTicket, companies, contacts, products, staff, callLogs, role, loadCallLogsForTicket } = useCrm();
+  const { tickets, updateTicket, companies, contacts, products, staff, callLogs, role, loadCallLogsForTicket, fetchRecording } = useCrm();
   const [showRecordingModal, setShowRecordingModal] = useState(false);
+  const [recordingUrl, setRecordingUrl] = useState('');
+  const [recordingSummary, setRecordingSummary] = useState('');
+  const [recordingLoading, setRecordingLoading] = useState(false);
+  const [hasRecording, setHasRecording] = useState(false);
 
   const ticket = tickets.find(t => String(t.ticket_id) === String(id));
 
@@ -17,6 +21,34 @@ const TicketDetail = () => {
       loadCallLogsForTicket(ticket.ticket_id);
     }
   }, [ticket?.ticket_id]);
+
+  useEffect(() => {
+    const loadRecording = async () => {
+      if (!ticket?.ticket_id) return;
+      setRecordingLoading(true);
+      setHasRecording(false);
+      try {
+        const data = await fetchRecording(ticket.ticket_id);
+        if (data.success && data.recording && data.recording.recordURL) {
+          setRecordingUrl(data.recording.recordURL);
+          setRecordingSummary(data.recording.summary || ticket.summary || ticket.notes || ticket.query_text || 'No summary recorded in database.');
+          setHasRecording(true);
+        } else {
+          setRecordingUrl('');
+          setRecordingSummary('');
+          setHasRecording(false);
+        }
+      } catch (err) {
+        console.error('Failed to load recording for ticket:', err);
+        setRecordingUrl('');
+        setRecordingSummary('');
+        setHasRecording(false);
+      } finally {
+        setRecordingLoading(false);
+      }
+    };
+    loadRecording();
+  }, [ticket?.ticket_id, ticket, fetchRecording]);
 
   if (!ticket) {
     return <div style={{ padding: '24px' }}>Ticket not found.</div>;
@@ -111,29 +143,33 @@ const TicketDetail = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h4 style={{ margin: 0, fontSize: '16px', color: 'var(--color-primary)', fontWeight: '700' }}>Conversation Summary & Recording</h4>
-              <button
-                onClick={() => setShowRecordingModal(true)}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 18px',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '24px',
-                  fontSize: '14px',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(22, 64, 122, 0.3)',
-                  transition: 'transform 0.15s'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                <span style={{ fontSize: '18px' }}>🎵</span>
-                <span>Listen to Call Recording</span>
-              </button>
+              {recordingLoading ? (
+                <span style={{ color: '#1e3a8a', fontWeight: '700' }}>Checking recording...</span>
+              ) : hasRecording ? (
+                <button
+                  onClick={() => setShowRecordingModal(true)}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 18px',
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '24px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 12px rgba(22, 64, 122, 0.3)',
+                    transition: 'transform 0.15s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  <span style={{ fontSize: '18px' }}>🎵</span>
+                  <span>Listen to Call Recording</span>
+                </button>
+              ) : null}
             </div>
 
             <div style={{
@@ -151,7 +187,7 @@ const TicketDetail = () => {
               <span style={{ fontSize: '22px' }}>📋</span>
               <div>
                 <strong style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.85, marginBottom: '4px' }}>Conversation summary</strong>
-                <span style={{ lineHeight: '1.5', display: 'block' }}>{getTicketSummary()}</span>
+                <span style={{ lineHeight: '1.5', display: 'block' }}>{recordingSummary || getTicketSummary()}</span>
               </div>
             </div>
           </div>
@@ -204,6 +240,8 @@ const TicketDetail = () => {
 
       <RecordingModal
         ticket={showRecordingModal ? ticket : null}
+        recordingUrl={recordingUrl}
+        recordingSummary={recordingSummary}
         onClose={() => setShowRecordingModal(false)}
       />
     </div>

@@ -227,6 +227,33 @@ export const CrmProvider = ({ children }) => {
     }
   };
 
+  const fetchRecording = async (ticketID) => {
+    try {
+      console.log('Calling recording API for ticket:', ticketID);
+      const res = await fetch(`${API_BASE}/recording/${ticketID}`, {
+        headers: HEADERS
+      });
+
+      const data = await res.json().catch(() => ({}));
+      console.log('Recording API response:', data);
+
+      if (!res.ok) {
+        return {
+          success: false,
+          message: data.message || 'Recording not found.'
+        };
+      }
+
+      return data;
+    } catch (err) {
+      console.error('Failed to fetch recording:', err);
+      return {
+        success: false,
+        message: 'Unable to load recording. Please try again later.'
+      };
+    }
+  };
+
   const createTicket = async (ticketData) => {
     const newTicketId = `TICK-${Date.now()}`;
     const company = companies.find(c => String(c.company_id) === String(ticketData.company_id));
@@ -354,7 +381,7 @@ export const CrmProvider = ({ children }) => {
     products, setProducts, updateProduct,
     purchases, setPurchases,
     staff, setStaff,
-    tickets, setTickets, updateTicket, createTicket, loadCallLogsForTicket,
+    tickets, setTickets, updateTicket, createTicket, loadCallLogsForTicket, fetchRecording,
     leads, setLeads,
     callLogs, setCallLogs, uploadCsv,
   };
