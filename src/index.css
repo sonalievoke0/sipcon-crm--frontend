@@ -94,3 +94,13 @@ tr:nth-child(even) {
 tr:hover {
   background-color: rgba(46, 111, 181, 0.05); /* Very light Steel Blue for hover */
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}

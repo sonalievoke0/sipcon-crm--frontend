@@ -6,9 +6,10 @@ import { useCrm } from '../context/CrmContext';
 
 const Layout = () => {
   const location = useLocation();
-  const { role, setRole } = useCrm();
+  const { role, setRole, uploadCsv } = useCrm();
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Staff'] },
@@ -18,19 +19,26 @@ const Layout = () => {
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(role));
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (selectedFile) {
-      // Mock upload process: shows alert and acts as if data is uploaded
-      alert(`Successfully processed "${selectedFile.name}"! Data has been uploaded to the database.`);
-      setIsCsvModalOpen(false);
-      setSelectedFile(null);
+      setIsUploading(true);
+      try {
+        const result = await uploadCsv(selectedFile);
+        alert(`Successfully processed "${selectedFile.name}"! ${result.imported || 0} records have been uploaded to the database.`);
+        setIsCsvModalOpen(false);
+        setSelectedFile(null);
+      } catch (err) {
+        alert(`Error uploading CSV: ${err.message}`);
+      } finally {
+        setIsUploading(false);
+      }
     } else {
       alert("Please select a CSV file first.");
     }
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', position: 'relative' }}>
+    <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', position: 'relative' }}>
       {/* Sidebar */}
       <div style={{
         width: '260px',
@@ -171,19 +179,20 @@ const Layout = () => {
 
             <button 
               onClick={handleFileUpload}
+              disabled={isUploading}
               style={{
                 width: '100%',
-                backgroundColor: 'var(--color-primary)',
-                color: 'var(--color-white)',
+                backgroundColor: isUploading ? 'var(--color-border)' : 'var(--color-primary)',
+                color: isUploading ? 'var(--color-text)' : 'var(--color-white)',
                 padding: '12px',
                 border: 'none',
                 borderRadius: '6px',
                 fontWeight: 'bold',
-                cursor: 'pointer',
+                cursor: isUploading ? 'not-allowed' : 'pointer',
                 fontSize: '16px'
               }}
             >
-              Upload to Database
+              {isUploading ? 'Uploading...' : 'Upload to Database'}
             </button>
           </div>
         </div>

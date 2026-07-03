@@ -12,17 +12,23 @@ const ProductsView = () => {
 
     return {
       id: purchase.purchase_id,
-      serial_no: purchase.serial_no || 'N/A',
-      company_name: company ? company.company_name : 'Unknown',
-      machine_details: product ? product.description : 'Unknown',
-      model: product ? product.machine_name : 'Unknown',
+      serial_no: purchase.serial_no ? String(purchase.serial_no) : 'N/A',
+      company_name: company ? String(company.company_name) : 'Unknown',
+      machine_details: product ? String(product.description) : 'Unknown',
+      model: product ? String(product.machine_name) : 'Unknown',
+      contact_number: purchase.contact_number ? String(purchase.contact_number) : '',
+      mail_ID: purchase.mail_ID ? String(purchase.mail_ID) : '',
+      DOI: purchase.DOI ? String(purchase.DOI) : '',
     };
   });
 
   const filteredCatalog = catalogData.filter(item => 
-    item.serial_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.model.toLowerCase().includes(searchTerm.toLowerCase())
+    String(item.serial_no).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.company_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.model).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.contact_number).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.mail_ID).toLowerCase().includes(searchTerm.toLowerCase()) ||
+    String(item.DOI).toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -87,6 +93,9 @@ const ProductsView = () => {
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
               </tr>
             </thead>
             <tbody>
@@ -105,11 +114,14 @@ const ProductsView = () => {
                     <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{item.company_name}</td>
                     <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{item.machine_details}</td>
                     <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
+                    <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_number || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: '#334155' }}>{item.mail_ID || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: '#64748b', fontWeight: '500' }}>{item.DOI || '-'}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>
+                  <td colSpan="8" style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>
                     No machines found matching your search.
                   </td>
                 </tr>

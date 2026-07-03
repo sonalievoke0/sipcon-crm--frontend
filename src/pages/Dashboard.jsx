@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatusBadge from '../components/StatusBadge';
+import RecordingModal from '../components/RecordingModal';
 import { useCrm } from '../context/CrmContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { tickets, companies } = useCrm();
+  const [selectedTicketForAudio, setSelectedTicketForAudio] = useState(null);
 
   const openTickets = tickets.filter(t => t.status === 'Open');
   const inProgressTickets = tickets.filter(t => t.status === 'In Progress');
@@ -13,6 +15,10 @@ const Dashboard = () => {
   const resolvedTickets = tickets.filter(t => t.status === 'Resolved' || t.status === 'Closed');
 
   const recentCompanies = companies.slice(0, 5);
+
+  const getTicketSummary = (t) => {
+    return t.summary || t.notes || (t.query_text ? (t.query_text.length > 35 ? t.query_text.substring(0, 32) + '...' : t.query_text) : 'No summary');
+  };
 
   return (
     <div>
@@ -46,25 +52,69 @@ const Dashboard = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
         {/* Recent Tickets Table */}
-        <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ marginTop: 0 }}>Recent Tickets</h3>
-          <div className="table-wrapper">
+        <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
+          <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)' }}>
+            <h3 style={{ margin: 0 }}>Recent Tickets</h3>
+          </div>
+          <div className="table-wrapper" style={{ margin: 0, border: 'none' }}>
             <table>
               <thead>
-                <tr>
-                  <th>Ticket ID</th>
-                  <th>Query</th>
-                  <th>Status</th>
-                  <th>Priority</th>
+                <tr style={{ backgroundColor: 'var(--color-primary)' }}>
+                  <th style={{ padding: '14px 16px', color: 'white' }}>Ticket ID</th>
+                  <th style={{ padding: '14px 16px', color: 'white' }}>Query</th>
+                  <th style={{ padding: '14px 16px', color: 'white' }}>Summary</th>
+                  <th style={{ padding: '14px 16px', color: 'white', textAlign: 'center' }}>Recording</th>
+                  <th style={{ padding: '14px 16px', color: 'white' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {tickets.map(t => (
-                  <tr key={t.ticket_id}>
-                    <td style={{ fontWeight: 'bold', color: 'var(--color-secondary)' }}>{t.ticket_id}</td>
-                    <td>{t.query_text.substring(0, 50)}...</td>
+                {tickets.slice(0, 6).map(t => (
+                  <tr 
+                    key={t.ticket_id}
+                    onClick={() => navigate(`/tickets/${t.ticket_id}`)}
+                    style={{ cursor: 'pointer', transition: 'background-color 0.15s' }}
+                  >
+                    <td style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{t.ticket_id}</td>
+                    <td style={{ fontSize: '13px' }}>{t.query_text.substring(0, 40)}...</td>
+                    <td>
+                      <span style={{
+                        padding: '4px 8px',
+                        backgroundColor: '#f8fafc',
+                        border: '1px solid #e2e8f0',
+                        color: '#334155',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: '500',
+                        display: 'inline-block'
+                      }}>
+                        📋 {getTicketSummary(t)}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedTicketForAudio(t);
+                        }}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          padding: '6px 10px',
+                          backgroundColor: 'rgba(22, 64, 122, 0.12)',
+                          color: 'var(--color-primary)',
+                          border: '1px solid rgba(22, 64, 122, 0.35)',
+                          borderRadius: '16px',
+                          fontSize: '11px',
+                          fontWeight: '700',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <span>🎵</span>
+                        <span>Listen</span>
+                      </button>
+                    </td>
                     <td><StatusBadge status={t.status} /></td>
-                    <td>{t.priority}</td>
                   </tr>
                 ))}
               </tbody>
@@ -99,6 +149,11 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      <RecordingModal 
+        ticket={selectedTicketForAudio} 
+        onClose={() => setSelectedTicketForAudio(null)} 
+      />
     </div>
   );
 };
