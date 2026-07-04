@@ -7,7 +7,6 @@ import { useCrm } from '../context/CrmContext';
 const Dashboard = () => {
   const navigate = useNavigate();
   const { tickets, companies } = useCrm();
-  const [selectedTicketForAudio, setSelectedTicketForAudio] = useState(null);
 
   const openTickets = tickets.filter(t => t.status === 'Open');
   const inProgressTickets = tickets.filter(t => t.status === 'In Progress');
@@ -25,26 +24,26 @@ const Dashboard = () => {
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-warning)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Open</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-warning)', margin: '8px 0 0' }}>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '16px', marginTop: 0 }}>Open</h3>
+          <p style={{ fontSize: '38px', fontWeight: 'bold', color: 'var(--color-warning)', margin: '8px 0 0' }}>
             {openTickets.length}
           </p>
         </div>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-secondary)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>In Progress</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-secondary)', margin: '8px 0 0' }}>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '16px', marginTop: 0 }}>In Progress</h3>
+          <p style={{ fontSize: '38px', fontWeight: 'bold', color: 'var(--color-secondary)', margin: '8px 0 0' }}>
             {inProgressTickets.length}
           </p>
         </div>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-danger)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Escalated</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-danger)', margin: '8px 0 0' }}>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '16px', marginTop: 0 }}>Escalated</h3>
+          <p style={{ fontSize: '38px', fontWeight: 'bold', color: 'var(--color-danger)', margin: '8px 0 0' }}>
             {escalatedTickets.length}
           </p>
         </div>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-success)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Resolved / Closed</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-success)', margin: '8px 0 0' }}>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '16px', marginTop: 0 }}>Resolved / Closed</h3>
+          <p style={{ fontSize: '38px', fontWeight: 'bold', color: 'var(--color-success)', margin: '8px 0 0' }}>
             {resolvedTickets.length}
           </p>
         </div>
@@ -54,17 +53,16 @@ const Dashboard = () => {
         {/* Recent Tickets Table */}
         <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--color-border)' }}>
-            <h3 style={{ margin: 0 }}>Recent Tickets</h3>
+            <h3 style={{ margin: 0, fontSize: '20px' }}>Recent Tickets</h3>
           </div>
           <div className="table-wrapper" style={{ margin: 0, border: 'none' }}>
             <table>
               <thead>
                 <tr style={{ backgroundColor: 'var(--color-primary)' }}>
-                  <th style={{ padding: '14px 16px', color: 'white' }}>Ticket ID</th>
-                  <th style={{ padding: '14px 16px', color: 'white' }}>Query</th>
-                  <th style={{ padding: '14px 16px', color: 'white' }}>Summary</th>
-                  <th style={{ padding: '14px 16px', color: 'white', textAlign: 'center' }}>Recording</th>
-                  <th style={{ padding: '14px 16px', color: 'white' }}>Status</th>
+                  <th style={{ padding: '14px 16px', color: 'white', fontSize: '16px' }}>Ticket ID</th>
+                  <th style={{ padding: '14px 16px', color: 'white', fontSize: '16px' }}>Query</th>
+                  <th style={{ padding: '14px 16px', color: 'white', fontSize: '16px' }}>Summary</th>
+                  <th style={{ padding: '14px 16px', color: 'white', fontSize: '16px' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -75,7 +73,7 @@ const Dashboard = () => {
                     style={{ cursor: 'pointer', transition: 'background-color 0.15s' }}
                   >
                     <td style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{t.ticket_id}</td>
-                    <td style={{ fontSize: '13px' }}>{t.query_text.substring(0, 40)}...</td>
+                    <td style={{ fontSize: '15px' }}>{t.query_text.substring(0, 40)}...</td>
                     <td>
                       <span style={{
                         padding: '4px 8px',
@@ -83,36 +81,12 @@ const Dashboard = () => {
                         border: '1px solid #e2e8f0',
                         color: '#334155',
                         borderRadius: '4px',
-                        fontSize: '11px',
+                        fontSize: '13px',
                         fontWeight: '500',
                         display: 'inline-block'
                       }}>
                         📋 {getTicketSummary(t)}
                       </span>
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTicketForAudio(t);
-                        }}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          padding: '6px 10px',
-                          backgroundColor: 'rgba(22, 64, 122, 0.12)',
-                          color: 'var(--color-primary)',
-                          border: '1px solid rgba(22, 64, 122, 0.35)',
-                          borderRadius: '16px',
-                          fontSize: '11px',
-                          fontWeight: '700',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <span>🎵</span>
-                        <span>Listen</span>
-                      </button>
                     </td>
                     <td><StatusBadge status={t.status} /></td>
                   </tr>
@@ -124,7 +98,7 @@ const Dashboard = () => {
 
         {/* Recent Companies */}
         <div className="card" style={{ marginBottom: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ marginTop: 0 }}>Recent Companies</h3>
+          <h3 style={{ marginTop: 0, fontSize: '20px' }}>Recent Companies</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {recentCompanies.map(company => (
               <div 
@@ -141,19 +115,15 @@ const Dashboard = () => {
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg)'}
               >
-                <div style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{company.company_name}</div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text)', opacity: 0.8 }}>{company.city}</div>
-                <div style={{ marginTop: '8px', fontSize: '13px', color: 'var(--color-accent)', fontWeight: 'bold' }}>{company.industry || 'No Industry Specified'}</div>
+                <div style={{ fontWeight: 'bold', color: 'var(--color-primary)', fontSize: '16px' }}>{company.company_name}</div>
+                <div style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.8 }}>{company.city}</div>
+                <div style={{ marginTop: '8px', fontSize: '15px', color: 'var(--color-accent)', fontWeight: 'bold' }}>{company.industry || 'No Industry Specified'}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <RecordingModal 
-        ticket={selectedTicketForAudio} 
-        onClose={() => setSelectedTicketForAudio(null)} 
-      />
     </div>
   );
 };

@@ -159,10 +159,10 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
               🎧
             </div>
             <div>
-              <h3 style={{ margin: 0, color: 'white', fontSize: '18px', fontWeight: '700' }}>
+              <h3 style={{ margin: 0, color: 'white', fontSize: '20px', fontWeight: '700' }}>
                 Call Recording & Database Summary
               </h3>
-              <div style={{ fontSize: '13px', opacity: 0.85, marginTop: '2px' }}>
+              <div style={{ fontSize: '15px', opacity: 0.85, marginTop: '2px' }}>
                 Ticket {ticket.ticket_id} • {ticket.company_name || 'Client Support'}
               </div>
             </div>
@@ -202,13 +202,13 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <span style={{ fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+              <span style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 Audio Track ({ticket.machine_name || 'General Query'})
               </span>
               <span style={{
                 padding: '4px 10px',
                 borderRadius: '20px',
-                fontSize: '12px',
+                fontSize: '14px',
                 fontWeight: '600',
                 backgroundColor: isPlaying ? '#dcfce7' : '#f1f5f9',
                 color: isPlaying ? '#15803d' : '#64748b',
@@ -258,7 +258,8 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
                 border: '1px solid #bae6fd',
                 borderRadius: '12px',
                 padding: '18px',
-                marginTop: '18px'
+                marginTop: '18px',
+                fontSize: '15px'
               }}>
                 Ticket is in progress to resolve. No recording is currently available.
               </div>
@@ -381,7 +382,7 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <span style={{ fontSize: '16px' }}>📋</span>
-              <h4 style={{ margin: 0, fontSize: '15px', fontWeight: '700', color: '#1e293b' }}>
+              <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>
                 Ticket Summary (Database)
               </h4>
             </div>
@@ -391,37 +392,14 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
               color: '#334155',
               padding: '14px 16px',
               borderRadius: '8px',
-              fontSize: '14px',
+              fontSize: '16px',
               lineHeight: '1.6'
             }}>
               {summary}
             </div>
           </div>
 
-          {/* Clean Recording Points */}
-          <div>
-            <h4 style={{ margin: '0 0 12px 0', fontSize: '15px', fontWeight: '700', color: '#1e293b' }}>
-              Recorded Points & Database Details
-            </h4>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Logged Query</div>
-                <div style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500' }}>"{ticket.query_text}"</div>
-              </div>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Equipment Machine</div>
-                <div style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500' }}>{ticket.machine_name || 'General Query'}</div>
-              </div>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Status & Priority</div>
-                <div style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500' }}>{ticket.status} • {ticket.priority || 'Medium'} Priority</div>
-              </div>
-              <div style={{ padding: '12px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>Created Timestamp</div>
-                <div style={{ fontSize: '13px', color: '#1e293b', fontWeight: '500' }}>{ticket.created_at ? new Date(ticket.created_at).toLocaleDateString('en-GB') : 'N/A'}</div>
-              </div>
-            </div>
-          </div>
+
         </div>
 
         {/* Modal Footer */}

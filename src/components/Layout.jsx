@@ -75,7 +75,7 @@ const Layout = () => {
             )
           })}
         </nav>
-        <div style={{ padding: '24px', fontSize: '12px', opacity: 0.8 }}>
+        <div style={{ padding: '24px', fontSize: '14px', opacity: 0.8 }}>
           <a href="https://evokeaisolutions.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', fontWeight: 'bold', textDecoration: 'none' }}>Powered by Evoke AI</a>
         </div>
       </div>
@@ -157,7 +157,7 @@ const Layout = () => {
               <X size={20} />
             </button>
             <h2 style={{ margin: '0 0 16px 0', color: 'var(--color-primary)' }}>Upload Data to Database</h2>
-            <p style={{ margin: '0 0 24px 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '14px' }}>
+            <p style={{ margin: '0 0 24px 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '16px' }}>
               Select a CSV file to parse and insert the records into the database.
             </p>
             
@@ -189,7 +189,7 @@ const Layout = () => {
                 borderRadius: '6px',
                 fontWeight: 'bold',
                 cursor: isUploading ? 'not-allowed' : 'pointer',
-                fontSize: '16px'
+                fontSize: '17px'
               }}
             >
               {isUploading ? 'Uploading...' : 'Upload to Database'}

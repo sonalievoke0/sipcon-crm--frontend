@@ -89,7 +89,7 @@ const TicketDetail = () => {
           >
             &larr; Back
           </button>
-          <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>{ticket.ticket_id}</h2>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '26px' }}>{ticket.ticket_id}</h2>
           <StatusBadge status={ticket.status} />
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -118,22 +118,22 @@ const TicketDetail = () => {
 
       <div style={{ marginBottom: '24px' }}>
         <div className="card">
-          <h3 style={{ marginTop: 0, marginBottom: '16px' }}>Query Details</h3>
+          <h3 style={{ marginTop: 0, marginBottom: '16px', fontSize: '20px' }}>Query Details</h3>
 
-          <div style={{ backgroundColor: 'var(--color-bg)', padding: '16px', borderRadius: '6px', fontSize: '16px', marginBottom: '20px', whiteSpace: 'pre-wrap' }}>
+          <div style={{ backgroundColor: 'var(--color-bg)', padding: '16px', borderRadius: '6px', fontSize: '18px', marginBottom: '20px', whiteSpace: 'pre-wrap' }}>
             {ticket.query_text}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px', paddingBottom: '20px', borderBottom: '1px solid var(--color-border)' }}>
-            <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '17px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <strong style={{ color: 'var(--color-text)' }}>Company:</strong>
               <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.company_name || company?.company_name || 'Unknown'}</span>
             </div>
-            <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '17px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <strong style={{ color: 'var(--color-text)' }}>Machine:</strong>
               <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.machine_name || product?.machine_name || 'Unknown'}</span>
             </div>
-            <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '17px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <strong style={{ color: 'var(--color-text)' }}>Created At:</strong>&nbsp;
               <span>{new Date(ticket.created_at).toLocaleDateString('en-GB')}</span>
             </div>
@@ -142,9 +142,9 @@ const TicketDetail = () => {
           {/* Call Recording & Conversation Summary below Company, Machine and others */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h4 style={{ margin: 0, fontSize: '16px', color: 'var(--color-primary)', fontWeight: '700' }}>Conversation Summary & Recording</h4>
+              <h4 style={{ margin: 0, fontSize: '18px', color: 'var(--color-primary)', fontWeight: '700' }}>Conversation Summary & Recording</h4>
               {recordingLoading ? (
-                <span style={{ color: '#1e3a8a', fontWeight: '700' }}>Checking recording...</span>
+                <span style={{ color: '#1e3a8a', fontWeight: '700', fontSize: '15px' }}>Checking recording...</span>
               ) : hasRecording ? (
                 <button
                   onClick={() => setShowRecordingModal(true)}
@@ -157,7 +157,7 @@ const TicketDetail = () => {
                     color: 'white',
                     border: 'none',
                     borderRadius: '24px',
-                    fontSize: '14px',
+                    fontSize: '15px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     boxShadow: '0 4px 12px rgba(22, 64, 122, 0.3)',
@@ -166,7 +166,7 @@ const TicketDetail = () => {
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                 >
-                  <span style={{ fontSize: '18px' }}>🎵</span>
+                  <span style={{ fontSize: '20px' }}>🎵</span>
                   <span>Listen to Call Recording</span>
                 </button>
               ) : null}
@@ -178,7 +178,7 @@ const TicketDetail = () => {
               border: '1px solid #e2e8f0',
               color: '#334155',
               borderRadius: '8px',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '500',
               display: 'flex',
               alignItems: 'center',
@@ -186,8 +186,8 @@ const TicketDetail = () => {
             }}>
               <span style={{ fontSize: '22px' }}>📋</span>
               <div>
-                <strong style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.85, marginBottom: '4px' }}>Conversation summary</strong>
-                <span style={{ lineHeight: '1.5', display: 'block' }}>{recordingSummary || getTicketSummary()}</span>
+                <strong style={{ display: 'block', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px', opacity: 0.85, marginBottom: '4px' }}>Conversation summary</strong>
+                <span style={{ lineHeight: '1.5', display: 'block', fontSize: '16px' }}>{recordingSummary || getTicketSummary()}</span>
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@ const TicketDetail = () => {
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0, marginBottom: '16px' }}>Call & Escalation History</h3>
+        <h3 style={{ marginTop: 0, marginBottom: '16px', fontSize: '20px' }}>Call & Escalation History</h3>
         <div className="table-wrapper">
           <table>
             <thead>

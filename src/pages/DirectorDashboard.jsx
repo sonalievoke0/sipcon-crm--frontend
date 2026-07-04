@@ -35,10 +35,10 @@ const DirectorDashboard = () => {
     <div style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
         <div>
-          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '28px', letterSpacing: '-0.5px' }}>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '32px', letterSpacing: '-0.5px' }}>
             Director's Dashboard
           </h2>
-          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '15px' }}>
+          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '17px' }}>
             Overview of installed machines and their details
           </p>
         </div>
@@ -53,7 +53,7 @@ const DirectorDashboard = () => {
               borderRadius: '8px',
               border: '1px solid var(--color-border)',
               width: '300px',
-              fontSize: '14px',
+              fontSize: '16px',
               boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
               outline: 'none',
               transition: 'all 0.2s ease'
@@ -67,20 +67,20 @@ const DirectorDashboard = () => {
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '32px' }}>
         <div className="card" style={{ borderLeft: '4px solid var(--color-primary)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Machines</h3>
-          <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-primary)', marginTop: '8px' }}>
+          <h3 style={{ fontSize: '16px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Machines</h3>
+          <div style={{ fontSize: '42px', fontWeight: '800', color: 'var(--color-primary)', marginTop: '8px' }}>
             {machineData.length}
           </div>
         </div>
         <div className="card" style={{ borderLeft: '4px solid var(--color-secondary)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Companies</h3>
-          <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-secondary)', marginTop: '8px' }}>
+          <h3 style={{ fontSize: '16px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Companies</h3>
+          <div style={{ fontSize: '42px', fontWeight: '800', color: 'var(--color-secondary)', marginTop: '8px' }}>
             {new Set(machineData.map(m => m.company_name)).size}
           </div>
         </div>
         <div className="card" style={{ borderLeft: '4px solid var(--color-accent)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Product Models</h3>
-          <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-accent)', marginTop: '8px' }}>
+          <h3 style={{ fontSize: '16px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Product Models</h3>
+          <div style={{ fontSize: '42px', fontWeight: '800', color: 'var(--color-accent)', marginTop: '8px' }}>
             {new Set(machineData.map(m => m.model)).size}
           </div>
         </div>
@@ -89,19 +89,19 @@ const DirectorDashboard = () => {
       {/* Machines Table */}
       <div className="card" style={{ padding: '0', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', borderRadius: '12px' }}>
         <div style={{ padding: '24px', borderBottom: '1px solid var(--color-border)', backgroundColor: '#fafafa' }}>
-          <h3 style={{ margin: 0, fontSize: '18px', color: 'var(--color-primary)' }}>Machine Directory</h3>
+          <h3 style={{ margin: 0, fontSize: '22px', color: 'var(--color-primary)' }}>Machine Directory</h3>
         </div>
         <div className="table-wrapper" style={{ margin: 0 }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: 'var(--color-primary)' }}>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
               </tr>
             </thead>
             <tbody>

@@ -35,8 +35,8 @@ const ProductsView = () => {
     <div style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '28px', letterSpacing: '-0.5px' }}>Product Catalog</h2>
-          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '15px' }}>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '32px', letterSpacing: '-0.5px' }}>Product Catalog</h2>
+          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '17px' }}>
             Directory of all machines currently installed
           </p>
         </div>
@@ -53,7 +53,7 @@ const ProductsView = () => {
                 borderRadius: '8px',
                 border: '1px solid var(--color-border)',
                 width: '300px',
-                fontSize: '14px',
+                fontSize: '16px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                 outline: 'none',
                 transition: 'all 0.2s ease'
@@ -88,14 +88,14 @@ const ProductsView = () => {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ backgroundColor: 'var(--color-primary)' }}>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)', width: '80px' }}>S.No.</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)', width: '80px' }}>S.No.</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Company Name</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
               </tr>
             </thead>
             <tbody>

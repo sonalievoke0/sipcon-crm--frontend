@@ -7,7 +7,7 @@ const StaffView = () => {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Team & Routing</h2>
+        <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '32px' }}>Team & Routing</h2>
         {role === 'Admin' && (
           <button style={{
             backgroundColor: 'var(--color-primary)',
@@ -25,7 +25,7 @@ const StaffView = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Service & Sales Team</h3>
+          <h3 style={{ marginTop: 0, fontSize: '20px' }}>Service & Sales Team</h3>
           <div className="table-wrapper">
             <table>
               <thead>
@@ -45,7 +45,7 @@ const StaffView = () => {
                     <td>{s.designation}</td>
                     <td>
                       <span style={{ 
-                        padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold',
+                        padding: '2px 8px', borderRadius: '12px', fontSize: '14px', fontWeight: 'bold',
                         backgroundColor: 'var(--color-bg)', color: 'var(--color-text)'
                       }}>
                         L{s.level}
@@ -53,7 +53,7 @@ const StaffView = () => {
                     </td>
                     <td>
                       <div>{s.phone}</div>
-                      <div style={{ fontSize: '12px', opacity: 0.7 }}>{s.email}</div>
+                      <div style={{ fontSize: '14px', opacity: 0.7 }}>{s.email}</div>
                     </td>
                     <td>
                       {s.products_handled === 'All' ? 'All Machines' : 
@@ -75,7 +75,7 @@ const StaffView = () => {
         </div>
 
         <div className="card">
-          <h3 style={{ marginTop: 0 }}>Escalation Routing by Product</h3>
+          <h3 style={{ marginTop: 0, fontSize: '20px' }}>Escalation Routing by Product</h3>
           <div className="table-wrapper">
             <table>
               <thead>

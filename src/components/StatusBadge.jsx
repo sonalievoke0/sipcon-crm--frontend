@@ -20,9 +20,9 @@ const StatusBadge = ({ status }) => {
     <span style={{
       backgroundColor,
       color,
-      padding: '4px 10px',
+      padding: '6px 12px',
       borderRadius: '12px',
-      fontSize: '12px',
+      fontSize: '14px',
       fontWeight: 'bold',
       display: 'inline-block'
     }}>
