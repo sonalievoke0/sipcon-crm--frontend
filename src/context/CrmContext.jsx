@@ -36,11 +36,12 @@ export const CrmProvider = ({ children }) => {
         let purchaseIdCounter = 1;
 
         machines.forEach(machine => {
-          let company = derivedCompanies.find(c => c.company_name === machine.company_name);
-          if (!company && machine.company_name) {
+          const compName = machine.company_name || 'Unknown Company';
+          let company = derivedCompanies.find(c => c.company_name === compName);
+          if (!company) {
             company = {
               company_id: companyIdCounter++,
-              company_name: machine.company_name,
+              company_name: compName,
               industry: '',
               city: machine.location || '',
               contact_name: machine.name || '',
@@ -49,12 +50,13 @@ export const CrmProvider = ({ children }) => {
             derivedCompanies.push(company);
           }
 
-          let product = derivedProducts.find(p => p.machine_name === machine.model);
-          if (!product && machine.model) {
+          const modelName = machine.model || machine.machine_details || 'Unknown Model';
+          let product = derivedProducts.find(p => p.machine_name === modelName);
+          if (!product) {
             product = {
               product_id: productIdCounter++,
-              machine_name: machine.model,
-              description: machine.machine_details,
+              machine_name: modelName,
+              description: machine.machine_details || modelName,
             };
             derivedProducts.push(product);
           }

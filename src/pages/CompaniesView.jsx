@@ -5,13 +5,14 @@ import { useCrm } from '../context/CrmContext';
 const CompaniesView = () => {
   const { purchases, companies, products, role } = useCrm();
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateSort, setDateSort] = useState('latest');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, dateSort]);
 
   // Combine data to display as the Companies Directory based on installed machines
   const catalogData = purchases.map(purchase => {
@@ -33,16 +34,59 @@ const CompaniesView = () => {
     };
   });
 
-  const filteredCatalog = catalogData.filter(item => 
-    String(item.serial_no).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.company_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.model).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.location).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.contact_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.contact_number).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.mail_ID).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    String(item.DOI).toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const parseDateString = (dateStr) => {
+    if (!dateStr || dateStr === '-' || dateStr === 'N/A') return 0;
+    const ddmmyyyy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+    const match = String(dateStr).trim().match(ddmmyyyy);
+    if (match) {
+      const day = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const year = parseInt(match[3], 10);
+      if (day > 12 || month < 12) {
+        return new Date(year, month, day).getTime();
+      }
+    }
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d.getTime();
+    const d2 = new Date(String(dateStr).replace(' ', 'T'));
+    if (!isNaN(d2.getTime())) return d2.getTime();
+    return 0;
+  };
+
+  const now = Date.now();
+  const fifteenDaysMs = 15 * 24 * 60 * 60 * 1000;
+
+  const filteredCatalog = catalogData.filter(item => {
+    const matchesSearch = searchTerm === '' ||
+      String(item.serial_no).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.company_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.model).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.location).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.contact_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.contact_number).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.mail_ID).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      String(item.DOI).toLowerCase().includes(searchTerm.toLowerCase());
+
+    let matchesDate = true;
+    if (dateSort === '15days') {
+      const tTime = parseDateString(item.DOI);
+      matchesDate = tTime > 0 && (now - tTime) <= fifteenDaysMs && tTime <= (now + 86400000);
+    }
+
+    return matchesSearch && matchesDate;
+  }).sort((a, b) => {
+    const timeA = parseDateString(a.DOI);
+    const timeB = parseDateString(b.DOI);
+
+    if (timeA === 0 && timeB === 0) return 0;
+    if (timeA === 0) return 1;
+    if (timeB === 0) return -1;
+
+    if (dateSort === 'oldest') {
+      return timeA - timeB;
+    }
+    return timeB - timeA;
+  });
 
   const totalPages = Math.ceil(filteredCatalog.length / itemsPerPage);
   const paginatedCatalog = filteredCatalog.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -56,8 +100,8 @@ const CompaniesView = () => {
             Directory of companies and installed machines
           </p>
         </div>
-        
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative' }}>
             <input
               type="text"
@@ -65,11 +109,11 @@ const CompaniesView = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
-                padding: '12px 20px',
+                padding: '12px 20px 12px 36px',
                 borderRadius: '8px',
                 border: '1px solid var(--color-border)',
-                width: '300px',
-                fontSize: '16px',
+                width: '280px',
+                fontSize: '15px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
                 outline: 'none',
                 transition: 'all 0.2s ease'
@@ -77,6 +121,41 @@ const CompaniesView = () => {
               onFocus={(e) => e.target.style.borderColor = 'var(--color-primary)'}
               onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
             />
+            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+              🔍
+            </span>
+          </div>
+
+          <div style={{ position: 'relative', minWidth: '165px' }}>
+            <select
+              value={dateSort}
+              onChange={(e) => {
+                setDateSort(e.target.value);
+                setCurrentPage(1);
+              }}
+              style={{
+                width: '100%',
+                padding: '12px 36px 12px 14px',
+                borderRadius: '8px',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-white)',
+                color: 'var(--color-text)',
+                fontSize: '15px',
+                fontWeight: '600',
+                outline: 'none',
+                cursor: 'pointer',
+                appearance: 'none',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <option value="latest">⏱️ Latest </option>
+              <option value="oldest">⏳ Oldest</option>
+              <option value="15days">📅 Last 15 Days</option>
+            </select>
+            <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '12px', color: '#64748b' }}>
+              ▼
+            </span>
           </div>
         </div>
       </div>
@@ -103,29 +182,29 @@ const CompaniesView = () => {
                 paginatedCatalog.map((item, idx) => {
                   const actualIdx = (currentPage - 1) * itemsPerPage + idx;
                   return (
-                  <tr 
-                  key={item.id} 
-                  onClick={() => navigate(`/companies/${item.company_id}`)}
-                  style={{ 
-                    borderBottom: '1px solid var(--color-border)',
-                    backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa',
-                    transition: 'background-color 0.2s',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
-                  >
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#64748b' }}>{actualIdx + 1}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{item.company_name}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_name || '-'}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{item.machine_details}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_number || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155' }}>{item.mail_ID || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b' }}>{item.location || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', fontWeight: '500' }}>{item.DOI || '-'}</td>
-                  </tr>
+                    <tr
+                      key={item.id}
+                      onClick={() => navigate(`/companies/${item.company_id}`)}
+                      style={{
+                        borderBottom: '1px solid var(--color-border)',
+                        backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa',
+                        transition: 'background-color 0.2s',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
+                    >
+                      <td style={{ padding: '16px 24px', fontWeight: '500', color: '#64748b' }}>{actualIdx + 1}</td>
+                      <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{item.company_name}</td>
+                      <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_name || '-'}</td>
+                      <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
+                      <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{item.machine_details}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
+                      <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_number || '-'}</td>
+                      <td style={{ padding: '16px 24px', color: '#334155' }}>{item.mail_ID || '-'}</td>
+                      <td style={{ padding: '16px 24px', color: '#64748b' }}>{item.location || '-'}</td>
+                      <td style={{ padding: '16px 24px', color: '#64748b', fontWeight: '500' }}>{item.DOI || '-'}</td>
+                    </tr>
                   );
                 })
               ) : (
@@ -137,13 +216,13 @@ const CompaniesView = () => {
               )}
             </tbody>
           </table>
-          
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderTop: '1px solid var(--color-border)', backgroundColor: '#fff' }}>
             <div style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '16px' }}>
               Showing {filteredCatalog.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredCatalog.length)} of {filteredCatalog.length} entries
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button 
+              <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
                 style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
@@ -153,7 +232,7 @@ const CompaniesView = () => {
               <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontWeight: 'bold' }}>
                 {currentPage} / {totalPages || 1}
               </div>
-              <button 
+              <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages || totalPages === 0}
                 style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage === totalPages || totalPages === 0 ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer' }}

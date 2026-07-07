@@ -6,7 +6,6 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [activeSpeaker, setActiveSpeaker] = useState('System');
   const [recordingUrl, setRecordingUrl] = useState(externalRecordingUrl || '');
   const [recordingError, setRecordingError] = useState('');
@@ -319,12 +318,10 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '18px' }}>
-                  <audio ref={audioRef} controls style={{ width: '100%', borderRadius: '12px', marginTop: '4px' }}>
-                    <source src={recordingUrl} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
+                <audio ref={audioRef} style={{ display: 'none' }}>
+                  <source src={recordingUrl} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
               </>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '18px' }}>
@@ -345,33 +342,6 @@ const RecordingModal = ({ ticket, onClose, recordingUrl: externalRecordingUrl, r
                     Listen to Call Recording
                   </button>
                 )}
-              </div>
-            )}
-
-            {recordingUrl && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #f1f5f9', fontSize: '13px', color: '#64748b' }}>
-                <div>Speaker: <strong style={{ color: '#1e293b' }}>{activeSpeaker !== 'Idle' ? activeSpeaker : 'Recorded Call Track'}</strong></div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>Speed:</span>
-                  {[1, 1.5, 2].map((speed) => (
-                    <button
-                      key={speed}
-                      onClick={() => setPlaybackSpeed(speed)}
-                      style={{
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        border: '1px solid #e2e8f0',
-                        backgroundColor: playbackSpeed === speed ? 'var(--color-primary)' : 'white',
-                        color: playbackSpeed === speed ? 'white' : '#475569',
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      {speed}x
-                    </button>
-                  ))}
-                </div>
               </div>
             )}
           </div>

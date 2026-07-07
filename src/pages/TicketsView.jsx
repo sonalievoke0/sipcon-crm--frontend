@@ -10,7 +10,30 @@ const TicketsView = () => {
   const [filter, setFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateSort, setDateSort] = useState('latest');
   const itemsPerPage = 10;
+
+  const parseDateString = (dateStr) => {
+    if (!dateStr || dateStr === '-' || dateStr === 'N/A') return 0;
+    const ddmmyyyy = /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+    const match = String(dateStr).trim().match(ddmmyyyy);
+    if (match) {
+      const day = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const year = parseInt(match[3], 10);
+      if (day > 12 || month < 12) {
+        return new Date(year, month, day).getTime();
+      }
+    }
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) return d.getTime();
+    const d2 = new Date(String(dateStr).replace(' ', 'T'));
+    if (!isNaN(d2.getTime())) return d2.getTime();
+    return 0;
+  };
+
+  const now = Date.now();
+  const fifteenDaysMs = 15 * 24 * 60 * 60 * 1000;
 
   const filteredTickets = tickets.filter(t => {
     const matchesFilter = filter === 'All' || t.status === filter;
@@ -24,7 +47,25 @@ const TicketsView = () => {
       (t.machine_name && t.machine_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (t.query_text && t.query_text.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    return matchesFilter && matchesSearch;
+    let matchesDate = true;
+    if (dateSort === '15days') {
+      const tTime = parseDateString(t.created_at);
+      matchesDate = tTime > 0 && (now - tTime) <= fifteenDaysMs && tTime <= (now + 86400000);
+    }
+
+    return matchesFilter && matchesSearch && matchesDate;
+  }).sort((a, b) => {
+    const timeA = parseDateString(a.created_at);
+    const timeB = parseDateString(b.created_at);
+
+    if (timeA === 0 && timeB === 0) return 0;
+    if (timeA === 0) return 1;
+    if (timeB === 0) return -1;
+
+    if (dateSort === 'oldest') {
+      return timeA - timeB;
+    }
+    return timeB - timeA;
   });
 
   const indexOfLastTicket = currentPage * itemsPerPage;
@@ -70,28 +111,63 @@ const TicketsView = () => {
               </button>
             ))}
           </div>
-          <div style={{ position: 'relative', width: '100%', maxWidth: '320px' }}>
-            <input
-              type="text"
-              placeholder="Search tickets by ID, company, query..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              style={{
-                width: '100%',
-                padding: '10px 14px 10px 36px',
-                borderRadius: '8px',
-                border: '1px solid var(--color-border)',
-                fontSize: '16px',
-                outline: 'none',
-                boxSizing: 'border-box'
-              }}
-            />
-            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
-              🔍
-            </span>
+          <div style={{ display: 'flex', gap: '12px', width: '100%', maxWidth: '520px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', flex: '1 1 240px' }}>
+              <input
+                type="text"
+                placeholder="Search tickets by ID, company, query..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px 10px 36px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  fontSize: '15px',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.03)'
+                }}
+              />
+              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>
+                🔍
+              </span>
+            </div>
+
+            <div style={{ position: 'relative', minWidth: '165px' }}>
+              <select
+                value={dateSort}
+                onChange={(e) => {
+                  setDateSort(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '10px 32px 10px 14px',
+                  borderRadius: '8px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: 'var(--color-white)',
+                  color: 'var(--color-text)',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  outline: 'none',
+                  cursor: 'pointer',
+                  appearance: 'none',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.03)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <option value="latest">⏱️ Latest First</option>
+                <option value="oldest">⏳ Oldest First</option>
+                <option value="15days">📅 Last 15 Days</option>
+              </select>
+              <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: '12px', color: '#64748b' }}>
+                ▼
+              </span>
+            </div>
           </div>
         </div>
       </div>
