@@ -28,47 +28,13 @@ const CompanyDetail = () => {
         <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>{company.company_name}</h2>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
         <div className="card" style={{ maxWidth: '600px' }}>
           <h3 style={{ marginTop: 0, borderBottom: '1px solid var(--color-border)', paddingBottom: '12px', marginBottom: '16px' }}>Company Details</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '15px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
               <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Company Name:</strong> 
               <span style={{ fontWeight: '500', color: 'var(--color-primary)' }}>{company.company_name}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
-              <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Industry:</strong> 
-              <span>{company.industry || '-'}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
-              <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Location:</strong> 
-              <span>{company.city}</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
-              <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Primary Contact:</strong> 
-              <span>
-                {primaryContact ? (
-                  <span>
-                    {primaryContact.full_name} <br/>
-                    <span style={{ fontSize: '13px', opacity: 0.7 }}>{primaryContact.whatsapp_number}</span>
-                  </span>
-                ) : '-'}
-              </span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
-              <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Source:</strong> 
-              <span>
-                <span style={{
-                  padding: '4px 8px',
-                  backgroundColor: company.source === 'Existing' ? 'var(--color-bg)' : 'rgba(15, 181, 174, 0.1)',
-                  color: company.source === 'Existing' ? 'var(--color-text)' : 'var(--color-accent)',
-                  borderRadius: '4px',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}>
-                  {company.source}
-                </span>
-              </span>
             </div>
           </div>
         </div>
@@ -88,8 +54,13 @@ const CompanyDetail = () => {
                     <div style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.8, marginBottom: '8px' }}>
                       {product?.description || 'No details'}
                     </div>
-                    <div style={{ fontSize: '14px', fontWeight: '500' }}>
-                      <strong>Serial No:</strong> {purchase.serial_no || 'N/A'}
+                    <div style={{ fontSize: '14px', fontWeight: '500', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px', borderTop: '1px solid var(--color-border)', paddingTop: '8px' }}>
+                      <div><strong>Serial No:</strong> {purchase.serial_no || 'N/A'}</div>
+                      {purchase.location && <div><strong>Location:</strong> {purchase.location}</div>}
+                      {purchase.contact_name && <div><strong>Contact Name:</strong> {purchase.contact_name}</div>}
+                      {purchase.contact_number && <div><strong>Contact No:</strong> {purchase.contact_number}</div>}
+                      {purchase.mail_ID && <div><strong>Email ID:</strong> {purchase.mail_ID}</div>}
+                      {purchase.DOI && <div><strong>Date of Installation:</strong> {purchase.DOI}</div>}
                     </div>
                   </div>
                 );

@@ -45,8 +45,8 @@ const TicketsView = () => {
               <tr>
                 <th>Ticket ID</th>
                 <th>Company</th>
+                <th>Machine</th>
                 <th>Query</th>
-                <th>Priority</th>
                 <th>Status</th>
                 <th>Created</th>
               </tr>
@@ -61,17 +61,11 @@ const TicketsView = () => {
                     style={{ cursor: 'pointer' }}
                   >
                     <td style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{t.ticket_id}</td>
-                    <td>{company ? company.company_name : 'Unknown'}</td>
+                    <td>{t.company_name || company?.company_name || 'Unknown'}</td>
+                    <td>{t.machine_name || 'N/A'}</td>
                     <td>{t.query_text}</td>
-                    <td style={{ 
-                      color: t.priority === 'Critical' ? 'var(--color-danger)' : 
-                             t.priority === 'High' ? 'var(--color-warning)' : 'inherit',
-                      fontWeight: t.priority === 'Critical' || t.priority === 'High' ? 'bold' : 'normal'
-                    }}>
-                      {t.priority}
-                    </td>
                     <td><StatusBadge status={t.status} /></td>
-                    <td>{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td>{new Date(t.created_at).toLocaleDateString('en-GB')}</td>
                   </tr>
                 )
               })}
