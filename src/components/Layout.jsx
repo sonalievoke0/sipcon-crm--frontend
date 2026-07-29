@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Ticket, Building2, Users, Package, BarChart2, Inbox, Upload, X } from 'lucide-react';
+import { LayoutDashboard, Ticket, Building2, Users, Package, BarChart2, Inbox, X } from 'lucide-react';
 import logoImg from '../assets/image.png';
 import { useCrm } from '../context/CrmContext';
 
 const Layout = () => {
   const location = useLocation();
-  const { role, setRole, uploadCsv } = useCrm();
-  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const { role, setRole } = useCrm();
 
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Staff'] },
@@ -19,46 +16,7 @@ const Layout = () => {
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(role));
 
-  const handleFileUpload = async () => {
-    if (selectedFile) {
-      setIsUploading(true);
-      try {
-        const result = await uploadCsv(selectedFile);
-        alert(`Successfully processed "${selectedFile.name}"! ${result.imported || 0} records have been uploaded to the database.`);
-        setIsCsvModalOpen(false);
-        setSelectedFile(null);
-      } catch (err) {
-        alert(`Error uploading CSV: ${err.message}`);
-      } finally {
-        setIsUploading(false);
-      }
-    } else {
-      alert("Please select a CSV file first.");
-    }
-  };
 
-  const handleDownloadTemplate = () => {
-    const headers = [
-      'S.No.',
-      'Company Name',
-      'Name',
-      'Sr No of Machines',
-      'Machine Details',
-      'Model',
-      'Contact No.',
-      'Email ID',
-      'Location',
-      'Date of Installation'
-    ];
-    const csvContent = "data:text/csv;charset=utf-8," + headers.join(",");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "sipcon_machine_template.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', position: 'relative' }}>
@@ -120,27 +78,7 @@ const Layout = () => {
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             
-            {/* Upload CSV Button */}
-            <button 
-              onClick={() => setIsCsvModalOpen(true)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'var(--color-primary)', // Theme blue color
-                color: 'var(--color-white)', // White font for better contrast
-                padding: '8px 16px',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                transition: 'background-color 0.2s'
-              }}
-            >
-              <Upload size={16} color="#fff" />
-              Upload CSV
-            </button>
+
 
             <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
               AM
@@ -154,79 +92,7 @@ const Layout = () => {
         </main>
       </div>
 
-      {/* CSV Upload Modal */}
-      {isCsvModalOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'var(--color-white)',
-            borderRadius: '12px',
-            padding: '32px',
-            width: '400px',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            position: 'relative'
-          }}>
-            <button 
-              onClick={() => setIsCsvModalOpen(false)}
-              style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text)' }}
-            >
-              <X size={20} />
-            </button>
-            <h2 style={{ margin: '0 0 16px 0', color: 'var(--color-primary)' }}>Upload Data to Database</h2>
-            <p style={{ margin: '0 0 24px 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '14px' }}>
-              Select a CSV file to parse and insert the records into the database.
-              <br/>
-              <button 
-                onClick={handleDownloadTemplate} 
-                style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', padding: 0, textDecoration: 'underline', marginTop: '8px' }}
-              >
-                Download CSV Template
-              </button>
-            </p>
-            
-            <div style={{ 
-              border: '2px dashed var(--color-border)', 
-              borderRadius: '8px', 
-              padding: '32px', 
-              textAlign: 'center',
-              marginBottom: '24px',
-              backgroundColor: 'var(--color-bg)'
-            }}>
-              <input 
-                type="file" 
-                accept=".csv"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
-                style={{ width: '100%' }}
-              />
-            </div>
 
-            <button 
-              onClick={handleFileUpload}
-              disabled={isUploading}
-              style={{
-                width: '100%',
-                backgroundColor: isUploading ? 'var(--color-border)' : 'var(--color-primary)',
-                color: isUploading ? 'var(--color-text)' : 'var(--color-white)',
-                padding: '12px',
-                border: 'none',
-                borderRadius: '6px',
-                fontWeight: 'bold',
-                cursor: isUploading ? 'not-allowed' : 'pointer',
-                fontSize: '16px'
-              }}
-            >
-              {isUploading ? 'Uploading...' : 'Upload to Database'}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
