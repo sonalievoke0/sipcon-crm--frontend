@@ -53,7 +53,7 @@ const StaffView = () => {
                     </td>
                     <td>
                       <div>{s.phone}</div>
-                      <div style={{ fontSize: '12px', opacity: 0.7 }}>{s.email}</div>
+                      <div style={{ fontSize: '12px' }}>{s.email}</div>
                     </td>
                     <td>
                       {s.products_handled === 'All' ? 'All Machines' : 

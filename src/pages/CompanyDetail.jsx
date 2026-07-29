@@ -33,7 +33,7 @@ const CompanyDetail = () => {
           <h3 style={{ marginTop: 0, borderBottom: '1px solid var(--color-border)', paddingBottom: '12px', marginBottom: '16px' }}>Company Details</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '15px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '150px 1fr' }}>
-              <strong style={{ color: 'var(--color-text)', opacity: 0.8 }}>Company Name:</strong> 
+              <strong style={{ color: 'var(--color-text)' }}>Company Name:</strong> 
               <span style={{ fontWeight: '500', color: 'var(--color-primary)' }}>{company.company_name}</span>
             </div>
           </div>
@@ -51,7 +51,7 @@ const CompanyDetail = () => {
                     <div style={{ fontWeight: 'bold', color: 'var(--color-secondary)', fontSize: '16px', marginBottom: '4px' }}>
                       {product?.machine_name || 'Unknown Model'}
                     </div>
-                    <div style={{ fontSize: '13px', color: 'var(--color-text)', opacity: 0.8, marginBottom: '8px' }}>
+                    <div style={{ fontSize: '13px', color: 'var(--color-text)', marginBottom: '8px' }}>
                       {product?.description || 'No details'}
                     </div>
                     <div style={{ fontSize: '14px', fontWeight: '500', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px', borderTop: '1px solid var(--color-border)', paddingTop: '8px' }}>
@@ -66,7 +66,7 @@ const CompanyDetail = () => {
                 );
               })
             ) : (
-              <div style={{ padding: '16px', textAlign: 'center', color: 'var(--color-text)', opacity: 0.7 }}>
+              <div style={{ padding: '16px', textAlign: 'center', color: 'var(--color-text)' }}>
                 No machines found for this company.
               </div>
             )}

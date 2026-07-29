@@ -14,6 +14,7 @@ const Dashboard = () => {
   const connectedTickets = getTicketsByStatus(['connected']);
   const inProgressTickets = getTicketsByStatus(['in progress']);
   const escalatedTickets = getTicketsByStatus(['escalated']);
+  const unresolvedTickets = getTicketsByStatus(['unresolved']);
   const resolvedTickets = getTicketsByStatus(['resolved']);
 
   const recentCompanies = companies.slice(0, 5);
@@ -22,26 +23,52 @@ const Dashboard = () => {
     <div>
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-        <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-warning)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Connected</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-warning)', margin: '8px 0 0' }}>
-            {connectedTickets.length}
-          </p>
-        </div>
-        <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-secondary)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>In Progress</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-secondary)', margin: '8px 0 0' }}>
-            {inProgressTickets.length}
-          </p>
-        </div>
-        <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-danger)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Escalated</h3>
-          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-danger)', margin: '8px 0 0' }}>
+        <div 
+          className="card" 
+          style={{ marginBottom: 0, borderLeft: '4px solid #f97316', cursor: 'pointer' }}
+          onClick={() => navigate('/tickets', { state: { filter: 'Escalated' } })}
+        >
+          <h3 style={{ color: 'var(--color-text)', fontSize: '14px', marginTop: 0 }}>Escalated</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#f97316', margin: '8px 0 0' }}>
             {escalatedTickets.length}
           </p>
         </div>
-        <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-success)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Resolved</h3>
+        <div 
+          className="card" 
+          style={{ marginBottom: 0, borderLeft: '4px solid #f97316', cursor: 'pointer' }}
+          onClick={() => navigate('/tickets', { state: { filter: 'In Progress' } })}
+        >
+          <h3 style={{ color: 'var(--color-text)', fontSize: '14px', marginTop: 0 }}>In Progress</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#f97316', margin: '8px 0 0' }}>
+            {inProgressTickets.length}
+          </p>
+        </div>
+        <div 
+          className="card" 
+          style={{ marginBottom: 0, borderLeft: '4px solid #f97316', cursor: 'pointer' }}
+          onClick={() => navigate('/tickets', { state: { filter: 'Connected' } })}
+        >
+          <h3 style={{ color: 'var(--color-text)', fontSize: '14px', marginTop: 0 }}>Connected</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#f97316', margin: '8px 0 0' }}>
+            {connectedTickets.length}
+          </p>
+        </div>
+        <div 
+          className="card" 
+          style={{ marginBottom: 0, borderLeft: '4px solid var(--color-danger)', cursor: 'pointer' }}
+          onClick={() => navigate('/tickets', { state: { filter: 'Unresolved' } })}
+        >
+          <h3 style={{ color: 'var(--color-text)', fontSize: '14px', marginTop: 0 }}>Unresolved</h3>
+          <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-danger)', margin: '8px 0 0' }}>
+            {unresolvedTickets.length}
+          </p>
+        </div>
+        <div 
+          className="card" 
+          style={{ marginBottom: 0, borderLeft: '4px solid var(--color-success)', cursor: 'pointer' }}
+          onClick={() => navigate('/tickets', { state: { filter: 'Resolved' } })}
+        >
+          <h3 style={{ color: 'var(--color-text)', fontSize: '14px', marginTop: 0 }}>Resolved</h3>
           <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-success)', margin: '8px 0 0' }}>
             {resolvedTickets.length}
           </p>
@@ -63,7 +90,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {tickets.map(t => (
+                {tickets.slice(0, 5).map(t => (
                   <tr key={t.ticket_id}>
                     <td style={{ fontWeight: 'bold', color: 'var(--color-secondary)' }}>{t.ticket_id}</td>
                     <td>{t.query_text.substring(0, 50)}...</td>
@@ -96,7 +123,7 @@ const Dashboard = () => {
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg)'}
               >
                 <div style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{company.company_name}</div>
-                <div style={{ fontSize: '12px', color: 'var(--color-text)', opacity: 0.8 }}>{company.city}</div>
+                <div style={{ fontSize: '12px', color: 'var(--color-text)' }}>{company.city}</div>
                 <div style={{ marginTop: '8px', fontSize: '13px', color: 'var(--color-accent)', fontWeight: 'bold' }}>{company.industry || 'No Industry Specified'}</div>
               </div>
             ))}

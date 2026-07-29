@@ -5,14 +5,14 @@ const StatusBadge = ({ status }) => {
   let color = 'var(--color-text)';
 
   const s = status.toLowerCase();
-  if (s === 'resolved' || s === 'active') {
-    backgroundColor = 'var(--color-success)';
+  if (['connected', 'active', 'in progress', 'escalated', 'critical', 'overdue'].includes(s)) {
+    backgroundColor = '#f97316';
     color = 'var(--color-white)';
-  } else if (s === 'pending' || s === 'in progress' || s === 'connected') {
-    backgroundColor = 'var(--color-warning)';
-    color = 'var(--color-white)';
-  } else if (s === 'escalated' || s === 'critical' || s === 'overdue') {
+  } else if (s === 'unresolved') {
     backgroundColor = 'var(--color-danger)';
+    color = 'var(--color-white)';
+  } else if (s === 'resolved') {
+    backgroundColor = 'var(--color-success)';
     color = 'var(--color-white)';
   }
 

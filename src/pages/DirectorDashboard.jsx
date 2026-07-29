@@ -38,7 +38,7 @@ const DirectorDashboard = () => {
           <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '28px', letterSpacing: '-0.5px' }}>
             Director's Dashboard
           </h2>
-          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '15px' }}>
+          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', fontSize: '15px' }}>
             Overview of installed machines and their details
           </p>
         </div>
@@ -67,19 +67,19 @@ const DirectorDashboard = () => {
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '32px' }}>
         <div className="card" style={{ borderLeft: '4px solid var(--color-primary)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Machines</h3>
+          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total Machines</h3>
           <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-primary)', marginTop: '8px' }}>
             {machineData.length}
           </div>
         </div>
         <div className="card" style={{ borderLeft: '4px solid var(--color-secondary)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Companies</h3>
+          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Companies</h3>
           <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-secondary)', marginTop: '8px' }}>
             {new Set(machineData.map(m => m.company_name)).size}
           </div>
         </div>
         <div className="card" style={{ borderLeft: '4px solid var(--color-accent)', background: 'linear-gradient(145deg, #ffffff, #f9fafb)' }}>
-          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', opacity: 0.7, marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Product Models</h3>
+          <h3 style={{ fontSize: '14px', color: 'var(--color-text)', marginTop: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Product Models</h3>
           <div style={{ fontSize: '36px', fontWeight: '800', color: 'var(--color-accent)', marginTop: '8px' }}>
             {new Set(machineData.map(m => m.model)).size}
           </div>
@@ -116,12 +116,12 @@ const DirectorDashboard = () => {
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
                   >
                     <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{m.serial_no}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{m.company_name}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{m.machine_details}</td>
+                    <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{m.company_name}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', lineHeight: '1.5' }}>{m.machine_details}</td>
                     <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{m.model}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{m.contact_number || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155' }}>{m.mail_ID || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', fontWeight: '500' }}>{m.DOI || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{m.contact_number || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)' }}>{m.mail_ID || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{m.DOI || '-'}</td>
                   </tr>
                 ))
               ) : (

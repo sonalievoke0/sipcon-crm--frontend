@@ -180,9 +180,11 @@ export const CrmProvider = ({ children }) => {
               ticket_id: ticketId,
               staff_called: firstCallStaffId,
               level: 1,
-              timestamp: dbLog.firstCallDate || null,
+              timestamp: dbLog.firstCallDate || dbLog.Date || null,
               call_status: dbLog.firstCallStatus || 'Pending',
               duration: dbLog.firstDuration || '-',
+              recording_url: (dbLog.firstCallStatus && (dbLog.firstCallStatus.toLowerCase().includes('connected') || dbLog.firstCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
+              summary: dbLog.summary || null,
               outcome: dbLog.firstCallStatus ? `Status: ${dbLog.firstCallStatus}` : '-'
             },
             {
@@ -190,9 +192,11 @@ export const CrmProvider = ({ children }) => {
               ticket_id: ticketId,
               staff_called: 'S6',
               level: 2,
-              timestamp: dbLog.secondCallDate || null,
+              timestamp: dbLog.secondCallDate || dbLog.Date || null,
               call_status: dbLog.secondCallStatus || 'Pending',
               duration: dbLog.secondDuration || '-',
+              recording_url: (dbLog.secondCallStatus && (dbLog.secondCallStatus.toLowerCase().includes('connected') || dbLog.secondCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
+              summary: dbLog.summary || null,
               outcome: dbLog.secondCallStatus ? `Status: ${dbLog.secondCallStatus}` : '-'
             },
             {
@@ -200,9 +204,11 @@ export const CrmProvider = ({ children }) => {
               ticket_id: ticketId,
               staff_called: 'S7',
               level: 3,
-              timestamp: dbLog.thirdCallDate || null,
+              timestamp: dbLog.thirdCallDate || dbLog.Date || null,
               call_status: dbLog.thirdCallStatus || 'Pending',
               duration: dbLog.thirdDuration || '-',
+              recording_url: (dbLog.thirdCallStatus && (dbLog.thirdCallStatus.toLowerCase().includes('connected') || dbLog.thirdCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
+              summary: dbLog.summary || null,
               outcome: dbLog.thirdCallStatus ? `Status: ${dbLog.thirdCallStatus}` : '-'
             }
           ];

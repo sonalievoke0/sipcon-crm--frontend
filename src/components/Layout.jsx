@@ -4,7 +4,7 @@ import { LayoutDashboard, Ticket, Building2, Users, Package, BarChart2, Inbox, X
 import logoImg from '../assets/image.png';
 import { useCrm } from '../context/CrmContext';
 
-const Layout = () => {
+const Layout = ({ onLogout }) => {
   const location = useLocation();
   const { role, setRole } = useCrm();
 
@@ -56,7 +56,7 @@ const Layout = () => {
             )
           })}
         </nav>
-        <div style={{ padding: '24px', fontSize: '12px', opacity: 0.8 }}>
+        <div style={{ padding: '24px', fontSize: '12px' }}>
           <a href="https://evokeaisolutions.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', fontWeight: 'bold', textDecoration: 'none' }}>Powered by Evoke AI</a>
         </div>
       </div>
@@ -77,8 +77,26 @@ const Layout = () => {
             {navItems.find(i => i.path === location.pathname || (i.path !== '/' && location.pathname.startsWith(i.path)))?.label || 'Overview'}
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            
-
+            {onLogout && (
+              <button 
+                onClick={onLogout}
+                style={{
+                  padding: '6px 16px',
+                  backgroundColor: 'var(--color-primary)',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  color: 'var(--color-white)',
+                  fontSize: '14px',
+                  transition: 'opacity 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+              >
+                Logout
+              </button>
+            )}
 
             <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', color: 'var(--color-white)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
               AM

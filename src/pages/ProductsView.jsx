@@ -36,7 +36,7 @@ const ProductsView = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
           <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '28px', letterSpacing: '-0.5px' }}>Product Catalog</h2>
-          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', opacity: 0.7, fontSize: '15px' }}>
+          <p style={{ margin: '8px 0 0', color: 'var(--color-text)', fontSize: '15px' }}>
             Directory of all machines currently installed
           </p>
         </div>
@@ -109,14 +109,14 @@ const ProductsView = () => {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
                   >
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#64748b' }}>{idx + 1}</td>
+                    <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{idx + 1}</td>
                     <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: '#334155' }}>{item.company_name}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', lineHeight: '1.5' }}>{item.machine_details}</td>
+                    <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{item.company_name}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', lineHeight: '1.5' }}>{item.machine_details}</td>
                     <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155', fontWeight: '500' }}>{item.contact_number || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#334155' }}>{item.mail_ID || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: '#64748b', fontWeight: '500' }}>{item.DOI || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.contact_number || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)' }}>{item.mail_ID || '-'}</td>
+                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.DOI || '-'}</td>
                   </tr>
                 ))
               ) : (
