@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Ticket, Building2, Users, Package, BarChart2, Inbox, X } from 'lucide-react';
 import logoImg from '../assets/image.png';
+import evokeLogo from '../assets/evoke.png';
 import { useCrm } from '../context/CrmContext';
 
 const Layout = ({ onLogout }) => {
@@ -56,8 +57,9 @@ const Layout = ({ onLogout }) => {
             )
           })}
         </nav>
-        <div style={{ padding: '24px', fontSize: '12px' }}>
-          <a href="https://evokeaisolutions.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', fontWeight: 'bold', textDecoration: 'none' }}>Powered by Evoke AI</a>
+        <div style={{ padding: '24px', display: 'flex', alignItems: 'center', gap: 0 }}>
+          <img src={evokeLogo} alt="Evoke AI Logo" style={{ height: '52px', objectFit: 'contain', marginRight: '-6px' }} />
+          <a href="https://evokeaisolutions.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-white)', fontWeight: 'bold', textDecoration: 'none', fontSize: '14px' }}>Powered by Evoke AI</a>
         </div>
       </div>
 
@@ -78,7 +80,7 @@ const Layout = ({ onLogout }) => {
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {onLogout && (
-              <button 
+              <button
                 onClick={onLogout}
                 style={{
                   padding: '6px 16px',
