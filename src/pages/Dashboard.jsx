@@ -7,10 +7,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { tickets, companies } = useCrm();
 
-  const openTickets = tickets.filter(t => t.status === 'Open');
-  const inProgressTickets = tickets.filter(t => t.status === 'In Progress');
-  const escalatedTickets = tickets.filter(t => t.status === 'Escalated');
-  const resolvedTickets = tickets.filter(t => t.status === 'Resolved' || t.status === 'Closed');
+  const getTicketsByStatus = (statusList) => {
+    return tickets.filter(t => t.status && statusList.includes(t.status.trim().toLowerCase()));
+  };
+
+  const connectedTickets = getTicketsByStatus(['connected']);
+  const inProgressTickets = getTicketsByStatus(['in progress']);
+  const escalatedTickets = getTicketsByStatus(['escalated']);
+  const resolvedTickets = getTicketsByStatus(['resolved']);
 
   const recentCompanies = companies.slice(0, 5);
 
@@ -19,9 +23,9 @@ const Dashboard = () => {
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginBottom: '32px' }}>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-warning)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Open</h3>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Connected</h3>
           <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-warning)', margin: '8px 0 0' }}>
-            {openTickets.length}
+            {connectedTickets.length}
           </p>
         </div>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-secondary)' }}>
@@ -37,7 +41,7 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="card" style={{ marginBottom: 0, borderLeft: '4px solid var(--color-success)' }}>
-          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Resolved / Closed</h3>
+          <h3 style={{ color: 'var(--color-text)', opacity: 0.7, fontSize: '14px', marginTop: 0 }}>Resolved</h3>
           <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'var(--color-success)', margin: '8px 0 0' }}>
             {resolvedTickets.length}
           </p>

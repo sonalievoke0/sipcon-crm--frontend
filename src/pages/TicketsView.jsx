@@ -10,14 +10,14 @@ const TicketsView = () => {
 
   const filteredTickets = filter === 'All' 
     ? tickets 
-    : tickets.filter(t => t.status === filter);
+    : tickets.filter(t => t.status && t.status.trim().toLowerCase() === filter.toLowerCase());
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Support Tickets</h2>
         <div style={{ display: 'flex', gap: '8px' }}>
-          {['All', 'Open', 'In Progress', 'Escalated', 'Resolved', 'Closed'].map(f => (
+          {['All', 'Connected', 'In Progress', 'Escalated', 'Resolved'].map(f => (
             <button 
               key={f}
               onClick={() => setFilter(f)}

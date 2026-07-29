@@ -32,11 +32,10 @@ const TicketDetail = () => {
 
   const getNextStatusOptions = () => {
     switch (ticket.status) {
-      case 'Open': return ['In Progress'];
+      case 'Connected': return ['In Progress'];
       case 'In Progress': return ['Escalated', 'Resolved'];
       case 'Escalated': return ['Resolved'];
-      case 'Resolved': return ['Closed'];
-      case 'Closed': return ['Reopen (Open)'];
+      case 'Resolved': return ['Reopen (Connected)'];
       default: return [];
     }
   };
@@ -56,7 +55,7 @@ const TicketDetail = () => {
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           {getNextStatusOptions().map(statusLabel => {
-            const actualStatus = statusLabel.includes('Reopen') ? 'Open' : statusLabel;
+            const actualStatus = statusLabel.includes('Reopen') ? 'Connected' : statusLabel;
             return (
               <button
                 key={statusLabel}

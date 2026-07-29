@@ -240,7 +240,7 @@ export const CrmProvider = ({ children }) => {
       Query: ticketData.query_text,
       machine: machineName,
       Created: createdAt,
-      Status: 'Open'
+      Status: 'Connected'
     };
 
     try {
@@ -258,7 +258,7 @@ export const CrmProvider = ({ children }) => {
           company_name: companyName,
           machine_name: machineName,
           query_text: ticketData.query_text,
-          status: 'Open',
+          status: 'Connected',
           priority: 'Medium',
           created_at: createdAt
         };
