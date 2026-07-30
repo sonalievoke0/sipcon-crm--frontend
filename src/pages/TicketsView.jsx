@@ -8,35 +8,83 @@ const TicketsView = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [filter, setFilter] = useState(location.state?.filter || 'All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 20;
 
-  const filteredTickets = filter === 'All' 
-    ? tickets 
-    : tickets.filter(t => t.status && t.status.trim().toLowerCase() === filter.toLowerCase());
+  const filteredTickets = tickets.filter(t => {
+    const statusMatch = filter === 'All' || (t.status && t.status.trim().toLowerCase() === filter.toLowerCase());
+    if (!statusMatch) return false;
+
+    if (!searchQuery) return true;
+
+    const company = companies.find(c => c.company_id === t.company_id);
+    const companyName = t.company_name || company?.company_name || 'Unknown';
+    const q = searchQuery.toLowerCase();
+
+    return (
+      (t.ticket_id && String(t.ticket_id).toLowerCase().includes(q)) ||
+      (companyName.toLowerCase().includes(q)) ||
+      (t.machine_name && t.machine_name.toLowerCase().includes(q)) ||
+      (t.query_text && t.query_text.toLowerCase().includes(q)) ||
+      (t.status && t.status.toLowerCase().includes(q))
+    );
+  });
+
+  // Pagination logic
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = filteredTickets.slice(indexOfFirstTicket, indexOfLastTicket);
+  const totalPages = Math.ceil(filteredTickets.length / ticketsPerPage);
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-        <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Support Tickets</h2>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          {['All', 'Connected', 'In Progress', 'Escalated', 'Unresolved', 'Resolved'].map(f => (
-            <button 
-              key={f}
-              onClick={() => setFilter(f)}
-              style={{
-                padding: '8px 16px',
-                border: '1px solid var(--color-border)',
-                backgroundColor: filter === f ? 'var(--color-secondary)' : 'var(--color-white)',
-                color: filter === f ? 'var(--color-white)' : 'var(--color-text)',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                transition: 'all 0.2s'
-              }}
-            >
-              {f}
-            </button>
-          ))}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Support Tickets</h2>
+          
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {['All', 'Connected', 'In Progress', 'Escalated', 'Unresolved', 'Resolved'].map(f => (
+              <button 
+                key={f}
+                onClick={() => {
+                  setFilter(f);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  padding: '8px 16px',
+                  border: '1px solid var(--color-border)',
+                  backgroundColor: filter === f ? 'var(--color-secondary)' : 'var(--color-white)',
+                  color: filter === f ? 'var(--color-white)' : 'var(--color-text)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
+
+        <input 
+          type="text" 
+          placeholder="Search tickets by ID, company, machine, or query..." 
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setCurrentPage(1);
+          }}
+          style={{
+            width: '100%',
+            padding: '10px 14px',
+            border: '1px solid var(--color-border)',
+            borderRadius: '6px',
+            fontSize: '15px',
+            boxSizing: 'border-box'
+          }}
+        />
       </div>
 
       <div className="card">
@@ -53,7 +101,7 @@ const TicketsView = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTickets.map(t => {
+              {currentTickets.map(t => {
                 const company = companies.find(c => c.company_id === t.company_id);
                 return (
                   <tr 
@@ -70,7 +118,7 @@ const TicketsView = () => {
                   </tr>
                 )
               })}
-              {filteredTickets.length === 0 && (
+              {currentTickets.length === 0 && (
                 <tr>
                   <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: 'var(--color-text)' }}>
                     No tickets found.
@@ -81,6 +129,42 @@ const TicketsView = () => {
           </table>
         </div>
       </div>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '24px', gap: '16px' }}>
+          <button 
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '6px',
+              border: '1px solid var(--color-border)',
+              backgroundColor: currentPage === 1 ? '#f5f5f5' : 'var(--color-white)',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Previous
+          </button>
+          
+          <span style={{ color: 'var(--color-text)' }}>
+            Page {currentPage} of {totalPages}
+          </span>
+          
+          <button 
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '6px',
+              border: '1px solid var(--color-border)',
+              backgroundColor: currentPage === totalPages ? '#f5f5f5' : 'var(--color-white)',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };
