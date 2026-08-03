@@ -14,26 +14,49 @@ const CompaniesView = () => {
   }, [searchTerm]);
 
   // Combine data to display as the Companies Directory based on installed machines
-  const catalogData = purchases.map(purchase => {
-    const company = companies.find(c => String(c.company_id) === String(purchase.company_id));
-    const product = products.find(p => String(p.product_id) === String(purchase.product_id));
+  const catalogData = [];
 
-    return {
-      id: purchase.purchase_id,
-      company_id: purchase.company_id,
-      serial_no: purchase.serial_no ? String(purchase.serial_no) : 'N/A',
-      company_name: company ? String(company.company_name) : 'Unknown',
-      machine_details: product ? String(product.description) : 'Unknown',
-      model: product ? String(product.machine_name) : 'Unknown',
-      location: purchase.location ? String(purchase.location) : '',
-      contact_name: purchase.contact_name ? String(purchase.contact_name) : '',
-      contact_number: purchase.contact_number ? String(purchase.contact_number) : '',
-      mail_ID: purchase.mail_ID ? String(purchase.mail_ID) : '',
-      DOI: purchase.DOI ? String(purchase.DOI) : '',
-    };
+  companies.forEach(company => {
+    const companyPurchases = purchases.filter(p => String(p.company_id) === String(company.company_id));
+
+    if (companyPurchases.length > 0) {
+      companyPurchases.forEach(purchase => {
+        const product = products.find(p => String(p.product_id) === String(purchase.product_id));
+        catalogData.push({
+          id: purchase.purchase_id,
+          company_id: purchase.company_id,
+          serial_no: purchase.serial_no ? String(purchase.serial_no) : 'N/A',
+          company_name: String(company.company_name),
+          machine_details: product ? String(product.description) : 'N/A',
+          model: product ? String(product.machine_name) : 'N/A',
+          location: purchase.location ? String(purchase.location) : company.city || '',
+          contact_name: purchase.contact_name ? String(purchase.contact_name) : company.contact_name || '',
+          contact_number: purchase.contact_number ? String(purchase.contact_number) : '',
+          mail_ID: purchase.mail_ID ? String(purchase.mail_ID) : '',
+          DOI: purchase.DOI ? String(purchase.DOI) : '',
+        });
+      });
+    } else {
+      catalogData.push({
+        id: `comp-${company.company_id}`,
+        company_id: company.company_id,
+        serial_no: '-',
+        company_name: String(company.company_name),
+        machine_details: '-',
+        model: '-',
+        location: company.city ? String(company.city) : '-',
+        contact_name: company.contact_name ? String(company.contact_name) : '-',
+        contact_number: company.contact_number ? String(company.contact_number) : '-',
+        mail_ID: company.mail_ID ? String(company.mail_ID) : '-',
+        DOI: '-',
+      });
+    }
   });
 
-  const filteredCatalog = catalogData.filter(item => 
+  // Reverse to show latest companies first
+  catalogData.reverse();
+
+  const filteredCatalog = catalogData.filter(item =>
     String(item.serial_no).toLowerCase().includes(searchTerm.toLowerCase()) ||
     String(item.company_name).toLowerCase().includes(searchTerm.toLowerCase()) ||
     String(item.model).toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -56,7 +79,7 @@ const CompaniesView = () => {
             Directory of companies and installed machines
           </p>
         </div>
-        
+
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <div style={{ position: 'relative' }}>
             <input
@@ -91,10 +114,8 @@ const CompaniesView = () => {
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Name</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Sr No of Machines</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Machine Details</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Model</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Contact No.</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Email ID</th>
-                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Location</th>
                 <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-white)' }}>Date of Installation</th>
               </tr>
             </thead>
@@ -103,47 +124,45 @@ const CompaniesView = () => {
                 paginatedCatalog.map((item, idx) => {
                   const actualIdx = (currentPage - 1) * itemsPerPage + idx;
                   return (
-                  <tr 
-                  key={item.id} 
-                  onClick={() => navigate(`/companies/${item.company_id}`)}
-                  style={{ 
-                    borderBottom: '1px solid var(--color-border)',
-                    backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa',
-                    transition: 'background-color 0.2s',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
-                  >
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{actualIdx + 1}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{item.company_name}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.contact_name || '-'}</td>
-                    <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', lineHeight: '1.5' }}>{item.machine_details}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-secondary)', fontWeight: '500' }}>{item.model}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.contact_number || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)' }}>{item.mail_ID || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)' }}>{item.location || '-'}</td>
-                    <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.DOI || '-'}</td>
-                  </tr>
+                    <tr
+                      key={item.id}
+                      onClick={() => navigate(`/companies/${item.company_id}`)}
+                      style={{
+                        borderBottom: '1px solid var(--color-border)',
+                        backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fafafa',
+                        transition: 'background-color 0.2s',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fafafa'}
+                    >
+                      <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{actualIdx + 1}</td>
+                      <td style={{ padding: '16px 24px', fontWeight: '500', color: 'var(--color-text)' }}>{item.company_name}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.contact_name || '-'}</td>
+                      <td style={{ padding: '16px 24px', fontWeight: '600', color: 'var(--color-primary)' }}>{item.serial_no}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-text)', lineHeight: '1.5' }}>{item.machine_details}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.contact_number || '-'}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-text)' }}>{item.mail_ID || '-'}</td>
+                      <td style={{ padding: '16px 24px', color: 'var(--color-text)', fontWeight: '500' }}>{item.DOI || '-'}</td>
+                    </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan="10" style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>
+                  <td colSpan="8" style={{ padding: '48px', textAlign: 'center', color: '#94a3b8' }}>
                     No companies found matching your search.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-          
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderTop: '1px solid var(--color-border)', backgroundColor: '#fff' }}>
             <div style={{ color: 'var(--color-text)', fontSize: '14px' }}>
               Showing {filteredCatalog.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0} to {Math.min(currentPage * itemsPerPage, filteredCatalog.length)} of {filteredCatalog.length} entries
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button 
+              <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
                 style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage === 1 ? '#f1f5f9' : '#fff', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
@@ -153,7 +172,7 @@ const CompaniesView = () => {
               <div style={{ display: 'flex', alignItems: 'center', padding: '0 8px', fontWeight: 'bold' }}>
                 {currentPage} / {totalPages || 1}
               </div>
-              <button 
+              <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages || totalPages === 0}
                 style={{ padding: '8px 16px', borderRadius: '4px', border: '1px solid var(--color-border)', backgroundColor: currentPage === totalPages || totalPages === 0 ? '#f1f5f9' : '#fff', cursor: currentPage === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer' }}

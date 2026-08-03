@@ -12,7 +12,8 @@ const Layout = ({ onLogout }) => {
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Staff'] },
     { path: '/tickets', label: 'Tickets', icon: <Ticket size={20} />, roles: ['Admin', 'Staff'] },
-    { path: '/companies', label: 'Companies', icon: <Building2 size={20} />, roles: ['Admin', 'Staff'] }
+    { path: '/companies', label: 'Companies', icon: <Building2 size={20} />, roles: ['Admin', 'Staff'] },
+    { path: '/performance', label: 'Escalations', icon: <Users size={20} />, roles: ['Admin', 'Staff'] }
   ];
 
   const visibleNavItems = navItems.filter(item => item.roles.includes(role));

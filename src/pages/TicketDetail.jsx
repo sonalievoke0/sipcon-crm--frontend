@@ -30,11 +30,13 @@ const TicketDetail = () => {
     await updateTicket(ticket.ticket_id, { status: newStatus });
   };
 
-  const hasConnectedCall = ticketLogs.some(log => log.call_status && (log.call_status.toLowerCase().includes('connected') || log.call_status.toLowerCase().includes('answered')));
+  const hasConnectedCall = ticketLogs.some(log => log.recording_url || log.summary);
 
   const recordedLogs = ticketLogs
-    .filter(log => log.call_status && (log.call_status.toLowerCase().includes('connected') || log.call_status.toLowerCase().includes('answered')))
+    .filter(log => log.recording_url || log.summary)
     .sort((a, b) => a.level - b.level);
+
+  const ticketSummary = recordedLogs.find(log => log.summary)?.summary;
 
   const getNextStatusOptions = () => {
     switch (ticket.status) {
@@ -63,7 +65,7 @@ const TicketDetail = () => {
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button 
+          <button
             onClick={() => navigate('/tickets')}
             style={{ padding: '8px 16px', background: 'white', border: '1px solid var(--color-border)', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
           >
@@ -102,9 +104,8 @@ const TicketDetail = () => {
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h2 style={{ margin: 0, color: 'var(--color-primary)', fontSize: '18px' }}>Query Details</h2>
-            
-            {(hasConnectedCall && ticket.status && (ticket.status.toLowerCase() === 'resolved' || ticket.status.toLowerCase() === 'unresolved')) && (
-              <button 
+            {hasConnectedCall && (
+              <button
                 onClick={() => setShowRecordings(!showRecordings)}
                 style={{
                   padding: '10px 20px',
@@ -123,7 +124,7 @@ const TicketDetail = () => {
                   transform: showRecordings ? 'translateY(2px)' : 'none'
                 }}
                 onMouseOver={(e) => {
-                  if(!showRecordings) {
+                  if (!showRecordings) {
                     e.currentTarget.style.backgroundColor = 'var(--color-secondary)';
                     e.currentTarget.style.borderColor = 'var(--color-secondary)';
                     e.currentTarget.style.transform = 'translateY(-2px)';
@@ -131,7 +132,7 @@ const TicketDetail = () => {
                   }
                 }}
                 onMouseOut={(e) => {
-                  if(!showRecordings) {
+                  if (!showRecordings) {
                     e.currentTarget.style.backgroundColor = 'var(--color-primary)';
                     e.currentTarget.style.borderColor = 'var(--color-primary)';
                     e.currentTarget.style.transform = 'translateY(0)';
@@ -155,7 +156,21 @@ const TicketDetail = () => {
               <strong style={{ fontSize: '16px', color: 'var(--color-text)' }}>Machine:</strong>
               <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.machine_name || product?.machine_name || 'Unknown'}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}><strong>Created At:</strong>&nbsp;{new Date(ticket.created_at).toLocaleDateString('en-GB')}</div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <strong>Created At:</strong>&nbsp;{new Date(ticket.created_at).toLocaleDateString('en-GB')}
+            </div>
+            <div style={{ fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px', gridColumn: '1' }}>
+              <strong style={{ fontSize: '16px', color: 'var(--color-text)' }}>Client Name:</strong>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.client_name || 'Unknown'}</span>
+            </div>
+            <div style={{ fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <strong style={{ fontSize: '16px', color: 'var(--color-text)' }}>Contact No:</strong>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.client_number || 'N/A'}</span>
+            </div>
+            <div style={{ fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <strong style={{ fontSize: '16px', color: 'var(--color-text)' }}>Email ID:</strong>
+              <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{ticket.client_email || 'N/A'}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -171,18 +186,18 @@ const TicketDetail = () => {
           zIndex: 1000,
           padding: '20px'
         }}>
-          <div className="card" style={{ 
+          <div className="card" style={{
             backgroundColor: '#173d72',
             color: 'white',
-            borderRadius: '20px', 
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)', 
+            borderRadius: '20px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)',
             position: 'relative',
             maxWidth: '600px',
             width: '100%',
             border: 'none',
             padding: '32px'
           }}>
-            <button 
+            <button
               onClick={() => setShowRecordings(false)}
               style={{ position: 'absolute', top: '24px', right: '24px', background: 'rgba(255,255,255,0.1)', border: 'none', cursor: 'pointer', color: 'white', borderRadius: '50%', padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
               title="Close"
@@ -199,46 +214,31 @@ const TicketDetail = () => {
               </p>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {recordedLogs.length > 0 ? recordedLogs.map(log => (
-                <div key={log.log_id} style={{ border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '20px', backgroundColor: 'rgba(0,0,0,0.1)' }}>
-                  
-                  {log.recording_url ? (
-                    <div style={{ marginBottom: '24px', backgroundColor: 'white', padding: '16px', borderRadius: '12px' }}>
-                      <WaveAudioPlayer url={log.recording_url} />
-                    </div>
-                  ) : (
-                    <div style={{ marginBottom: '24px', padding: '16px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic', textAlign: 'center' }}>
-                       Recording audio not available yet.
-                    </div>
-                  )}
+            {ticketSummary && (
+              <div style={{ marginBottom: '24px', backgroundColor: 'rgba(255,255,255,0.1)', padding: '20px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <h4 style={{ margin: '0 0 12px 0', color: 'white', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                  Summary
+                </h4>
+                <p style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                  {ticketSummary}
+                </p>
+              </div>
+            )}
 
-                  {log.summary ? (
-                    <div>
-                      <h4 style={{ margin: '0 0 12px 0', color: 'white', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                        Summary
-                      </h4>
-                      <p style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: '14px', lineHeight: '1.6' }}>
-                        {log.summary}
-                      </p>
-                    </div>
-                  ) : (
-                    <div>
-                      <h4 style={{ margin: '0 0 12px 0', color: 'white', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                        Summary
-                      </h4>
-                      <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '14px', lineHeight: '1.6', fontStyle: 'italic' }}>
-                        No summary available.
-                      </p>
-                    </div>
-                  )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {recordedLogs.filter(log => log.recording_url).length > 0 ? recordedLogs.filter(log => log.recording_url).map(log => (
+                <div key={log.log_id} style={{ border: '1px solid rgba(255,255,255,0.2)', borderRadius: '16px', padding: '20px', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+                  <div style={{ backgroundColor: 'white', padding: '16px', borderRadius: '12px' }}>
+                    <WaveAudioPlayer url={log.recording_url} />
+                  </div>
                 </div>
               )) : (
-                <div style={{ textAlign: 'center', padding: '32px', color: 'rgba(255,255,255,0.7)' }}>
-                  No connected calls found.
-                </div>
+                !ticketSummary && (
+                  <div style={{ textAlign: 'center', padding: '32px', color: 'rgba(255,255,255,0.7)' }}>
+                    No recordings or summary available.
+                  </div>
+                )
               )}
             </div>
           </div>

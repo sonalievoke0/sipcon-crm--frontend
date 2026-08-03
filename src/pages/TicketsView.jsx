@@ -20,11 +20,15 @@ const TicketsView = () => {
 
     const company = companies.find(c => c.company_id === t.company_id);
     const companyName = t.company_name || company?.company_name || 'Unknown';
+    const clientName = t.client_name || '';
+    const contactNumber = t.client_number || '';
     const q = searchQuery.toLowerCase();
 
     return (
       (t.ticket_id && String(t.ticket_id).toLowerCase().includes(q)) ||
       (companyName.toLowerCase().includes(q)) ||
+      (clientName.toLowerCase().includes(q)) ||
+      (contactNumber.toLowerCase().includes(q)) ||
       (t.machine_name && t.machine_name.toLowerCase().includes(q)) ||
       (t.query_text && t.query_text.toLowerCase().includes(q)) ||
       (t.status && t.status.toLowerCase().includes(q))
@@ -42,10 +46,10 @@ const TicketsView = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <h2 style={{ margin: 0, color: 'var(--color-primary)' }}>Support Tickets</h2>
-          
+
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {['All', 'Connected', 'In Progress', 'Escalated', 'Unresolved', 'Resolved'].map(f => (
-              <button 
+            {['All', 'Connected', 'In Progress', 'Unresolved', 'Resolved'].map(f => (
+              <button
                 key={f}
                 onClick={() => {
                   setFilter(f);
@@ -68,9 +72,9 @@ const TicketsView = () => {
           </div>
         </div>
 
-        <input 
-          type="text" 
-          placeholder="Search tickets by ID, company, machine, or query..." 
+        <input
+          type="text"
+          placeholder="Search tickets by ID, company, machine, or query..."
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
@@ -94,6 +98,9 @@ const TicketsView = () => {
               <tr>
                 <th>Ticket ID</th>
                 <th>Company</th>
+                <th>Client Name</th>
+                <th>Contact No.</th>
+                <th>Email ID</th>
                 <th>Machine</th>
                 <th>Query</th>
                 <th>Status</th>
@@ -103,16 +110,20 @@ const TicketsView = () => {
             <tbody>
               {currentTickets.map(t => {
                 const company = companies.find(c => c.company_id === t.company_id);
+
                 return (
-                  <tr 
-                    key={t.ticket_id} 
+                  <tr
+                    key={t.ticket_id}
                     onClick={() => navigate(`/tickets/${t.ticket_id}`)}
                     style={{ cursor: 'pointer' }}
                   >
                     <td style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{t.ticket_id}</td>
                     <td>{t.company_name || company?.company_name || 'Unknown'}</td>
+                    <td>{t.client_name || 'N/A'}</td>
+                    <td>{t.client_number || 'N/A'}</td>
+                    <td>{t.client_email || 'N/A'}</td>
                     <td>{t.machine_name || 'N/A'}</td>
-                    <td>{t.query_text}</td>
+                    <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.query_text}>{t.query_text}</td>
                     <td><StatusBadge status={t.status} /></td>
                     <td>{new Date(t.created_at).toLocaleDateString('en-GB')}</td>
                   </tr>
@@ -120,7 +131,7 @@ const TicketsView = () => {
               })}
               {currentTickets.length === 0 && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '32px', color: 'var(--color-text)' }}>
+                  <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: 'var(--color-text)' }}>
                     No tickets found.
                   </td>
                 </tr>
@@ -132,7 +143,7 @@ const TicketsView = () => {
 
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '24px', gap: '16px' }}>
-          <button 
+          <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
             style={{
@@ -145,12 +156,12 @@ const TicketsView = () => {
           >
             Previous
           </button>
-          
+
           <span style={{ color: 'var(--color-text)' }}>
             Page {currentPage} of {totalPages}
           </span>
-          
-          <button 
+
+          <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
             style={{

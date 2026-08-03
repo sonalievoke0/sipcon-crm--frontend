@@ -33,12 +33,11 @@ const WaveAudioPlayer = ({ url }) => {
 
     const fetchAudio = async () => {
       try {
-        const fullUrl = url.startsWith('http') ? url : `https://sipcon-backend.evokeaisolutions.com${url.startsWith('/') ? '' : '/'}${url}`;
-        const response = await fetch(fullUrl, {
-          headers: {
-            'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro'
-          }
-        });
+        const isExternal = url.startsWith('http');
+        const fullUrl = isExternal ? url : `https://sipcon-backend.evokeaisolutions.com${url.startsWith('/') ? '' : '/'}${url}`;
+        const headers = isExternal ? {} : { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'x-client-source': 'evoke' };
+
+        const response = await fetch(fullUrl, { headers });
         if (response.ok) {
           const blob = await response.blob();
           objectUrl = URL.createObjectURL(blob);
@@ -90,19 +89,19 @@ const WaveAudioPlayer = ({ url }) => {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', width: '100%', backgroundColor: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-      <button 
-        onClick={togglePlayPause} 
+      <button
+        onClick={togglePlayPause}
         disabled={!isReady}
-        style={{ 
-          background: isReady ? 'var(--color-primary)' : '#cbd5e1', 
-          color: 'white', 
-          border: 'none', 
-          borderRadius: '50%', 
-          width: '40px', 
-          height: '40px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
+        style={{
+          background: isReady ? 'var(--color-primary)' : '#cbd5e1',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           cursor: isReady ? 'pointer' : 'not-allowed',
           flexShrink: 0,
           transition: 'transform 0.1s ease',
@@ -112,9 +111,9 @@ const WaveAudioPlayer = ({ url }) => {
         onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
       >
         {isPlaying ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
         )}
       </button>
       <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>

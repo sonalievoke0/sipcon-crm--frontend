@@ -17,7 +17,7 @@ const Dashboard = () => {
   const unresolvedTickets = getTicketsByStatus(['unresolved']);
   const resolvedTickets = getTicketsByStatus(['resolved']);
 
-  const recentCompanies = companies.slice(0, 5);
+  const recentCompanies = [...companies].reverse().slice(0, 5);
 
   return (
     <div>
@@ -86,7 +86,6 @@ const Dashboard = () => {
                   <th>Ticket ID</th>
                   <th>Query</th>
                   <th>Status</th>
-                  <th>Priority</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,7 +94,6 @@ const Dashboard = () => {
                     <td style={{ fontWeight: 'bold', color: 'var(--color-secondary)' }}>{t.ticket_id}</td>
                     <td>{t.query_text.substring(0, 50)}...</td>
                     <td><StatusBadge status={t.status} /></td>
-                    <td>{t.priority}</td>
                   </tr>
                 ))}
               </tbody>
@@ -124,7 +122,7 @@ const Dashboard = () => {
               >
                 <div style={{ fontWeight: 'bold', color: 'var(--color-primary)' }}>{company.company_name}</div>
                 <div style={{ fontSize: '12px', color: 'var(--color-text)' }}>{company.city}</div>
-                <div style={{ marginTop: '8px', fontSize: '13px', color: 'var(--color-accent)', fontWeight: 'bold' }}>{company.industry || 'No Industry Specified'}</div>
+                <div style={{ marginTop: '8px', fontSize: '13px', color: 'var(--color-accent)', fontWeight: 'bold' }}>{company.machine_name || 'No Machine Specified'}</div>
               </div>
             ))}
           </div>

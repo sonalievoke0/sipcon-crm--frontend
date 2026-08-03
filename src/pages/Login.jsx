@@ -1,3 +1,5 @@
+/*username : admin*/ 
+/*password : sipcon2026*/ 
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import logoImg from '../assets/image.png';
@@ -38,7 +40,7 @@ const Login = ({ onLogin }) => {
         alignItems: 'center'
       }}>
         <img src={logoImg} alt="Sipcon Logo" style={{ maxWidth: '200px', marginBottom: '24px' }} />
-        
+
         <h2 style={{ color: 'var(--color-primary)', marginBottom: '8px', textAlign: 'center' }}>
           Admin Login
         </h2>
@@ -64,8 +66,8 @@ const Login = ({ onLogin }) => {
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 'bold' }}>Username</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               style={{
@@ -81,8 +83,8 @@ const Login = ({ onLogin }) => {
           <div style={{ marginBottom: '24px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: 'bold' }}>Password</label>
             <div style={{ position: 'relative' }}>
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={{
@@ -118,7 +120,7 @@ const Login = ({ onLogin }) => {
               </button>
             </div>
           </div>
-          <button 
+          <button
             type="submit"
             style={{
               width: '100%',

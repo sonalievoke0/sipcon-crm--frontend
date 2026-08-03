@@ -7,6 +7,7 @@ import TicketDetail from './pages/TicketDetail'
 import CompaniesView from './pages/CompaniesView'
 import CompanyDetail from './pages/CompanyDetail'
 import Login from './pages/Login'
+import TeamPerformance from './pages/TeamPerformance'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -41,6 +42,7 @@ function App() {
           <Route path="tickets/:id" element={<TicketDetail />} />
           <Route path="companies" element={<CompaniesView />} />
           <Route path="companies/:id" element={<CompanyDetail />} />
+          <Route path="performance" element={<TeamPerformance />} />
         </Route>
       </Routes>
     </BrowserRouter>

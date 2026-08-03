@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const CrmContext = createContext();
 
 const API_BASE = "https://sipcon-backend.evokeaisolutions.com/api";
-const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'Content-Type': 'application/json' };
+const HEADERS = { 'x-api-key': 'sip_9k2mXqLvT4rNwZdBpFhJeYcU8aGs3Ro', 'x-client-source': 'evoke', 'Content-Type': 'application/json' };
 
 export const CrmProvider = ({ children }) => {
   const [role, setRole] = useState('Admin'); // 'Admin' or 'Staff'
@@ -36,25 +36,30 @@ export const CrmProvider = ({ children }) => {
         let purchaseIdCounter = 1;
 
         machines.forEach(machine => {
-          let company = derivedCompanies.find(c => c.company_name === machine.company_name);
-          if (!company && machine.company_name) {
+          let cName = machine.company_name || 'Unknown Company';
+          let company = derivedCompanies.find(c => c.company_name === cName);
+          if (!company) {
             company = {
               company_id: companyIdCounter++,
-              company_name: machine.company_name,
+              company_name: cName,
               industry: '',
+              machine_name: machine.model || machine.machine_details || 'Unknown Model',
               city: machine.location || '',
               contact_name: machine.name || '',
+              contact_number: machine.contact_number || '',
+              mail_ID: machine.mail_ID || '',
               source: 'DB',
             };
             derivedCompanies.push(company);
           }
 
-          let product = derivedProducts.find(p => p.machine_name === machine.model);
-          if (!product && machine.model) {
+          let modelName = machine.model || machine.machine_details || 'Unknown Model';
+          let product = derivedProducts.find(p => p.machine_name === modelName);
+          if (!product) {
             product = {
               product_id: productIdCounter++,
-              machine_name: machine.model,
-              description: machine.machine_details,
+              machine_name: modelName,
+              description: machine.machine_details || '',
             };
             derivedProducts.push(product);
           }
@@ -64,7 +69,7 @@ export const CrmProvider = ({ children }) => {
               purchase_id: purchaseIdCounter++,
               company_id: company.company_id,
               product_id: product.product_id,
-              serial_no: machine.machine_serial_no || machine.machine_no,
+              serial_no: machine.machine_serial_no || machine.machine_no || 'N/A',
               location: machine.location || '',
               contact_name: machine.name || '',
               contact_number: machine.contact_number || '',
@@ -99,18 +104,36 @@ export const CrmProvider = ({ children }) => {
           const ticketsJson = await ticketsRes.json();
           if (ticketsJson.success && ticketsJson.data) {
             const mappedTickets = ticketsJson.data.map(t => {
-              const company = derivedCompanies.find(c => c.company_name === t.Company);
-              const product = derivedProducts.find(p => p.machine_name === t.machine);
+              const lowerT = Object.keys(t).reduce((acc, key) => {
+                acc[key.toLowerCase()] = t[key];
+                return acc;
+              }, {});
+
+              let company = derivedCompanies.find(c => c.company_name === lowerT.company);
+              if (!company && lowerT.company) {
+                const tName = lowerT.company.toLowerCase();
+                company = derivedCompanies.find(c => c.company_name.toLowerCase().includes(tName) || tName.includes(c.company_name.toLowerCase()));
+              }
+
+              let product = derivedProducts.find(p => p.machine_name === lowerT.machine);
+              if (!product && lowerT.machine) {
+                const mName = lowerT.machine.toLowerCase();
+                product = derivedProducts.find(p => p.machine_name.toLowerCase().includes(mName) || mName.includes(p.machine_name.toLowerCase()));
+              }
+
               return {
-                ticket_id: t.Ticket_ID,
+                ticket_id: lowerT.ticket_id,
                 company_id: company ? company.company_id : null,
                 product_id: product ? product.product_id : null,
-                company_name: t.Company,
-                machine_name: t.machine,
-                query_text: t.Query,
-                status: t.Status,
+                company_name: lowerT.company,
+                client_name: lowerT.contact_name || lowerT.contact_person || lowerT.client_name || lowerT.name || '',
+                client_number: String(lowerT.phone_number || lowerT.contact_number || lowerT.phone || lowerT.mobile || lowerT.client_number || ''),
+                client_email: lowerT.email || lowerT.email_id || lowerT.mail_id || lowerT.client_email || (company ? company.mail_ID : '') || '',
+                machine_name: lowerT.machine,
+                query_text: lowerT.query,
+                status: lowerT.status,
                 priority: 'Medium',
-                created_at: t.Created
+                created_at: lowerT.created
               };
             });
             setTickets(mappedTickets);
@@ -174,42 +197,47 @@ export const CrmProvider = ({ children }) => {
             firstCallStaffId = 'S5';
           }
 
+          const lowerDbLog = Object.keys(dbLog).reduce((acc, key) => {
+            acc[key.toLowerCase()] = dbLog[key];
+            return acc;
+          }, {});
+
           const levelLogs = [
             {
               log_id: `${ticketId}-1`,
               ticket_id: ticketId,
               staff_called: firstCallStaffId,
               level: 1,
-              timestamp: dbLog.firstCallDate || dbLog.Date || null,
-              call_status: dbLog.firstCallStatus || 'Pending',
-              duration: dbLog.firstDuration || '-',
-              recording_url: (dbLog.firstCallStatus && (dbLog.firstCallStatus.toLowerCase().includes('connected') || dbLog.firstCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
-              summary: dbLog.summary || null,
-              outcome: dbLog.firstCallStatus ? `Status: ${dbLog.firstCallStatus}` : '-'
+              timestamp: lowerDbLog.firstcalldate || lowerDbLog.date || null,
+              call_status: lowerDbLog.firstcallstatus || 'Pending',
+              duration: lowerDbLog.firstduration || '-',
+              recording_url: lowerDbLog.recordurl || lowerDbLog.firstrecordurl || lowerDbLog.recording_url || lowerDbLog.recording || null,
+              summary: lowerDbLog.summary || null,
+              outcome: lowerDbLog.firstcallstatus ? `Status: ${lowerDbLog.firstcallstatus}` : '-'
             },
             {
               log_id: `${ticketId}-2`,
               ticket_id: ticketId,
               staff_called: 'S6',
               level: 2,
-              timestamp: dbLog.secondCallDate || dbLog.Date || null,
-              call_status: dbLog.secondCallStatus || 'Pending',
-              duration: dbLog.secondDuration || '-',
-              recording_url: (dbLog.secondCallStatus && (dbLog.secondCallStatus.toLowerCase().includes('connected') || dbLog.secondCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
-              summary: dbLog.summary || null,
-              outcome: dbLog.secondCallStatus ? `Status: ${dbLog.secondCallStatus}` : '-'
+              timestamp: lowerDbLog.secondcalldate || lowerDbLog.date || null,
+              call_status: lowerDbLog.secondcallstatus || 'Pending',
+              duration: lowerDbLog.secondduration || '-',
+              recording_url: lowerDbLog.secondrecordurl || null,
+              summary: null,
+              outcome: lowerDbLog.secondcallstatus ? `Status: ${lowerDbLog.secondcallstatus}` : '-'
             },
             {
               log_id: `${ticketId}-3`,
               ticket_id: ticketId,
               staff_called: 'S7',
               level: 3,
-              timestamp: dbLog.thirdCallDate || dbLog.Date || null,
-              call_status: dbLog.thirdCallStatus || 'Pending',
-              duration: dbLog.thirdDuration || '-',
-              recording_url: (dbLog.thirdCallStatus && (dbLog.thirdCallStatus.toLowerCase().includes('connected') || dbLog.thirdCallStatus.toLowerCase().includes('answered'))) ? dbLog.recordURL : null,
-              summary: dbLog.summary || null,
-              outcome: dbLog.thirdCallStatus ? `Status: ${dbLog.thirdCallStatus}` : '-'
+              timestamp: lowerDbLog.thirdcalldate || lowerDbLog.date || null,
+              call_status: lowerDbLog.thirdcallstatus || 'Pending',
+              duration: lowerDbLog.thirdduration || '-',
+              recording_url: lowerDbLog.thirdrecordurl || null,
+              summary: null,
+              outcome: lowerDbLog.thirdcallstatus ? `Status: ${lowerDbLog.thirdcallstatus}` : '-'
             }
           ];
 
@@ -287,19 +315,21 @@ export const CrmProvider = ({ children }) => {
         const updatedTicket = await res.json();
         const company = companies.find(c => c.company_name === updatedTicket.Company);
         const product = products.find(p => p.machine_name === updatedTicket.machine);
-        const mappedTicket = {
-          ticket_id: updatedTicket.Ticket_ID,
-          company_id: company ? company.company_id : null,
-          product_id: product ? product.product_id : null,
-          company_name: updatedTicket.Company,
-          machine_name: updatedTicket.machine,
-          query_text: updatedTicket.Query,
-          status: updatedTicket.Status,
-          priority: 'Medium',
-          created_at: updatedTicket.Created
-        };
-
-        setTickets(tickets => tickets.map(t => String(t.ticket_id) === String(ticket_id) ? mappedTicket : t));
+        setTickets(tickets => tickets.map(t => {
+          if (String(t.ticket_id) === String(ticket_id)) {
+            return {
+              ...t,
+              company_id: company ? company.company_id : t.company_id,
+              product_id: product ? product.product_id : t.product_id,
+              company_name: updatedTicket.Company || t.company_name,
+              machine_name: updatedTicket.machine || t.machine_name,
+              query_text: updatedTicket.Query || t.query_text,
+              status: updatedTicket.Status || t.status,
+              created_at: updatedTicket.Created || t.created_at
+            };
+          }
+          return t;
+        }));
       }
     } catch (err) {
       console.error('Failed to update ticket:', err);
